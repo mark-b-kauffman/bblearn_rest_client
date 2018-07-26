@@ -174,6 +174,19 @@ defmodule Learn.RestClient do
     {code, response} = HTTPoison.get url, headers, options
   end
 
+  @doc """
+    Call the v1_users endpoint, include a map of the parameters that is turned
+    into a parameter list and attached to the URL we make the request to.
+  """
+  def get_users(rest_client, params \\ %{}) do
+    params = %{offset: 0} |> Map.merge(params)
+    paramlist = URI.encode_query(params)
+    url = "https://#{rest_client.fqdn}#{@v1_users}?#{paramlist}"
+    headers = [{"Content-Type",  "application/json"}, {"Authorization", "Bearer #{rest_client.token["access_token"]}"}]
+    options = []
+    {code, response} = HTTPoison.get url, headers, options
+  end
+
   def get_users_courses(rest_client, user_id) do
     url = "https://#{rest_client.fqdn}#{@v1_users}/#{user_id}/courses"
     headers = [{"Content-Type",  "application/json"}, {"Authorization", "Bearer #{rest_client.token["access_token"]}"}]
