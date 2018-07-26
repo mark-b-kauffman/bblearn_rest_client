@@ -52,10 +52,12 @@ defmodule Learn.RestClient do
   alias Learn.{RestClient}
   import HTTPoison
   # oauth
-  @v1_oauth2_token "/learn/api/public/v1/oauth2/token"
-  @v1_oauth2_authorization_code "/learn/api/public/v1/oauth2/authorizationcode"
+  @v1_oauth2_token "/learn/api/public/v1/oauth2/token"                          # Since: 2015.11.0
+  @v1_oauth2_authorization_code "/learn/api/public/v1/oauth2/authorizationcode" # Since: 3200.7.0
 
-  @v1_system_version  "/learn/api/public/v1/system/version"
+  @v1_announcements "/learn/api/public/v1/announcements"                        # Since: 3100.7.0
+
+  @v1_system_version  "/learn/api/public/v1/system/version"                     # Since: 3000.3.0
 
   @v1_users "/learn/api/public/v1/users"
 
@@ -180,7 +182,7 @@ defmodule Learn.RestClient do
   """
   def get_users(rest_client, params \\ %{}) do
     params = %{offset: 0} |> Map.merge(params)
-    paramlist = URI.encode_query(params)
+    paramlist = URI.encode_query(params) # Turn the map into a parameter list string in one fell swoop.
     url = "https://#{rest_client.fqdn}#{@v1_users}?#{paramlist}"
     headers = [{"Content-Type",  "application/json"}, {"Authorization", "Bearer #{rest_client.token["access_token"]}"}]
     options = []
