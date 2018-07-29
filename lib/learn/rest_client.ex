@@ -57,9 +57,12 @@ defmodule Learn.RestClient do
 
   @v1_announcements "/learn/api/public/v1/announcements"                        # Since: 3100.7.0
 
+  @v1_courses "/learn/api/public/v1/courses"                                    # Since: 3000.3.0
+
+  @v1_users "/learn/api/public/v1/users"                                        # Since: 3000.1.0
+
   @v1_system_version  "/learn/api/public/v1/system/version"                     # Since: 3000.3.0
 
-  @v1_users "/learn/api/public/v1/users"
 
   @enforce_keys [:fqdn, :key, :secret]
   defstruct [:fqdn, :key, :secret, :token ]
@@ -167,6 +170,45 @@ defmodule Learn.RestClient do
   def authorize(rest_client) do
     authorize(rest_client, 0, "")
   end
+
+  ## Functions that call the v1_announcements endpoint
+  def get_announcements(rest_client, params \\ %{} ) do
+    params = %{offset: 0} |> Map.merge(params) # Default to 1 param, an offset of 0
+    paramlist = URI.encode_query(params) # Turn the map into a parameter list string in one fell swoop.
+    url = "https://#{rest_client.fqdn}#{@v1_announcements}?#{paramlist}"
+    headers = [{"Content-Type",  "application/json"}, {"Authorization", "Bearer #{rest_client.token["access_token"]}"}]
+    options = []
+    {code, response} = HTTPoison.get url, headers, options
+  end
+
+  ## Functions that call the v1_courses endpoint
+  @doc """
+    Call the v1_courses endpoint, include a map of the parameters that is turned
+    into a parameter list and attached to the URL we make the request to.
+  """
+  def get_courses(rest_client, params \\ %{}) do
+    params = %{offset: 0} |> Map.merge(params)
+    paramlist = URI.encode_query(params) # Turn the map into a parameter list string in one fell swoop.
+    url = "https://#{rest_client.fqdn}#{@v1_courses}?#{paramlist}"
+    headers = [{"Content-Type",  "application/json"}, {"Authorization", "Bearer #{rest_client.token["access_token"]}"}]
+    options = []
+    {code, response} = HTTPoison.get url, headers, options
+  end
+
+  @doc """
+    Call the v1_courses endpoint to get a course's users,
+    include a map of the parameters that is turned
+    into a parameter list and attached to the URL we make the request to.
+  """
+  def get_courses_users(rest_client, courseId, params \\ %{}) do
+    params = %{offset: 0} |> Map.merge(params)
+    paramlist = URI.encode_query(params) # Turn the map into a parameter list string in one fell swoop.
+    url = "https://#{rest_client.fqdn}#{@v1_courses}/#{courseId}/users?#{paramlist}"
+    headers = [{"Content-Type",  "application/json"}, {"Authorization", "Bearer #{rest_client.token["access_token"]}"}]
+    options = []
+    {code, response} = HTTPoison.get url, headers, options
+  end
+
 
   ## Functions that call the v1_users endpoint
   def get_user(rest_client, user_id) do
