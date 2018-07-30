@@ -59,6 +59,8 @@ defmodule Learn.RestClient do
 
   @v1_courses "/learn/api/public/v1/courses"                                    # Since: 3000.3.0
 
+  @v1_dataSources "/learn/api/public/v1/dataSources"                            # Since: 3000.1.0
+
   @v1_users "/learn/api/public/v1/users"                                        # Since: 3000.1.0
 
   @v1_system_version  "/learn/api/public/v1/system/version"                     # Since: 3000.3.0
@@ -98,14 +100,6 @@ defmodule Learn.RestClient do
     %RestClient{fqdn: fqdn, key: key, secret: secret, token: token}
   end
 
-  #Example use:
-  # iex(5)> {code, response} = Learn.RestClient.get_learn_version(rc)
-
-  def get_system_version(rest_client) do
-    # GET /learn/api/public/v1/system/version
-    url = "https://#{rest_client.fqdn}#{@v1_system_version}"
-    {code, response} = HTTPoison.get url
-  end
 
   def post_oauth2_token(rest_client, code, redirect_uri) do
     headers = [{"Content-Type",  "application/x-www-form-urlencoded"}]
@@ -182,6 +176,13 @@ defmodule Learn.RestClient do
   end
 
   ## Functions that call the v1_courses endpoint
+  def get_course(rest_client, course_id) do
+    url = "https://#{rest_client.fqdn}#{@v1_courses}/#{course_id}"
+    headers = [{"Content-Type",  "application/json"}, {"Authorization", "Bearer #{rest_client.token["access_token"]}"}]
+    options = []
+    {code, response} = HTTPoison.get url, headers, options
+  end
+
   @doc """
     Call the v1_courses endpoint, include a map of the parameters that is turned
     into a parameter list and attached to the URL we make the request to.
@@ -209,6 +210,27 @@ defmodule Learn.RestClient do
     {code, response} = HTTPoison.get url, headers, options
   end
 
+  ## Functions that call the @v1_dataSources endpoints
+  def get_dataSources(rest_client, params \\ %{}) do
+    params = %{offset: 0} |> Map.merge(params)
+    paramlist = URI.encode_query(params) # Turn the map into a parameter list string in one fell swoop.
+    url = "https://#{rest_client.fqdn}#{@v1_dataSources}?#{paramlist}"
+    headers = [{"Content-Type",  "application/json"}, {"Authorization", "Bearer #{rest_client.token["access_token"]}"}]
+    options = []
+    {code, response} = HTTPoison.get url, headers, options
+  end
+
+  ## Functions that call the v1_system_* endpoints
+  @doc """
+  Get the Learn version information.
+  Example use:
+   iex(5)> {code, response} = Learn.RestClient.get_system_version(rc)
+  """
+  def get_system_version(rest_client) do
+    # GET /learn/api/public/v1/system/version
+    url = "https://#{rest_client.fqdn}#{@v1_system_version}"
+    {code, response} = HTTPoison.get url
+  end
 
   ## Functions that call the v1_users endpoint
   def get_user(rest_client, user_id) do
