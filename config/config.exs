@@ -28,3 +28,7 @@ use Mix.Config
 # here (which is why it is important to import them last).
 #
 #     import_config "#{Mix.env}.exs"
+config :bblearn_rest_client, :oauth,
+  app_key: System.get_env("APP_KEY"),
+  app_secret: System.get_env("APP_SECRET"),
+  learn_server: System.get_env("LEARN_SERVER")

@@ -1,4 +1,4 @@
-defmodule BbLearnRestClient do
+defmodule BblearnRestClient do
   @moduledoc """
   Documentation for BblearnRestClient.
   The RestClient is in the Learn package.
@@ -16,4 +16,5 @@ defmodule BbLearnRestClient do
   def hello do
     "Use lib/learn/rest_client."
   end
+  
 end
