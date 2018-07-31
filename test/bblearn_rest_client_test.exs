@@ -1,8 +1,6 @@
 defmodule BblearnRestClientTest do
   use ExUnit.Case
-
   alias Learn.RestClient
-
   doctest BblearnRestClient
   # See config.exs app_key and app_secret are environment APP_KEY & APP_SECRET
   # Now we have a way to get access and test! Also need LEARN_SERVER
@@ -25,5 +23,32 @@ defmodule BblearnRestClientTest do
     rcauth = RestClient.authorize(rc)
     assert rcauth.token["token_type"] == "bearer"
   end
+
+  test "get_announcements" do
+    IO.puts "test: get_announcements"
+    rc = RestClient.new(@learn_server, @app_key, @app_secret)
+    assert Map.has_key?(rc, :token) == true
+    rcauth = RestClient.authorize(rc)
+    assert rcauth.token["token_type"] == "bearer"
+    {code, response} = RestClient.get_announcements(rcauth)
+    assert code == :ok
+    assert response.status_code == 200
+  end
+
+  test "get_course" do
+    IO.puts "test: get_course"
+    rc = RestClient.new(@learn_server, @app_key, @app_secret)
+    assert Map.has_key?(rc, :token) == true
+    rcauth = RestClient.authorize(rc)
+    assert rcauth.token["token_type"] == "bearer"
+    {code, response} = RestClient.get_course(rcauth, "courseId:1")
+    assert code == :ok
+    assert response.status_code == 200
+
+    {code, response} = RestClient.get_course(rcauth, "courseId:nocoursehere")
+    assert code == :ok
+    assert response.status_code == 404
+  end
+
 
 end
