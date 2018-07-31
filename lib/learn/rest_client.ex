@@ -51,6 +51,7 @@ defmodule Learn.RestClient do
 
   alias Learn.{RestClient}
   import HTTPoison
+  import Poison
   # oauth
   @v1_oauth2_token "/learn/api/public/v1/oauth2/token"                          # Since: 2015.11.0
   @v1_oauth2_authorization_code "/learn/api/public/v1/oauth2/authorizationcode" # Since: 3200.7.0
