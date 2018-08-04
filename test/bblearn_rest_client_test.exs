@@ -41,12 +41,12 @@ defmodule BblearnRestClientTest do
   end
 
   test "get_course" do
-    IO.puts "test: get_course"
+    IO.puts "test: get_v1_course"
     rc = RestClient.new(@learn_server, @app_key, @app_secret)
     assert Map.has_key?(rc, :token) == true
     rcauth = RestClient.authorize(rc)
     assert rcauth.token["token_type"] == "bearer"
-    {code, response} = RestClient.get_course(rcauth, "courseId:1")
+    {code, response} = RestClient.get_v1_course(rcauth, "courseId:1")
     assert code == :ok
     assert response.status_code == 200
 
@@ -73,6 +73,7 @@ defmodule BblearnRestClientTest do
     rcauth = RestClient.authorize(rc)
     assert rcauth.token["token_type"] == "bearer"
     {code, response} = RestClient.get_courses_users(rcauth, "courseId:1")
+
     assert code == :ok
     assert response.status_code == 200
   end
@@ -105,7 +106,9 @@ defmodule BblearnRestClientTest do
     assert Map.has_key?(rc, :token) == true
     rcauth = RestClient.authorize(rc)
     assert rcauth.token["token_type"] == "bearer"
-    {code, response} = RestClient.get_user(rcauth, "userName:mkauffman")
+    # NOTE: We had userName:mkauffman, but that doesn't work unless you have
+    # the REST APP configured with a user with the Learn Adamin System role.
+    {code, response} = RestClient.get_user(rcauth, "userName:mkauffman-student")
     # TODO: debug the phoenixdsk-user system role. It's not pulling the user.
     assert code == :ok
     assert response.status_code == 200

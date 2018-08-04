@@ -16,5 +16,5 @@ defmodule BblearnRestClient do
   def hello do
     "Use lib/learn/rest_client."
   end
-  
+
 end
