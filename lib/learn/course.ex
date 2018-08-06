@@ -2,11 +2,36 @@ defmodule Learn.Course do
   alias Learn.{Course}
   import Poison
 
-  defstruct [:json, :map ]
+  defstruct [:allowGuests, :availability, :courseId, :created, :dataSourceId, :enrollment, :externalAccessUrl,
+   :guestAccessUrl, :id, :locale, :name, :organization, :readOnly, :ultraStatus, :uuid]
 
+  @doc """
+  Create a new Course from the JSON that comes back from GET /courses/course_id
+
+  iex> {code, response} = RestClient.get_course(rcauth, "courseId:1")
+  iex> course = Course.new_from_json(response.body)
+  %Learn.Course{
+    allowGuests: true,
+    availability: %{"available" => "Yes", "duration" => %{"type" => "Continuous"}},
+    courseId: "1",
+    created: "2018-02-15T19:50:25.933Z",
+    dataSourceId: "_140_1",
+    enrollment: %{"type" => "InstructorLed"},
+    externalAccessUrl: "https://bd-partner-a-original.blackboard.com/webapps/blackboard/execute/courseMain?course_id=_29_1&sc=",
+    guestAccessUrl: "https://bd-partner-a-original.blackboard.com/webapps/blackboard/execute/courseMain?course_id=_29_1&sc=",
+    id: "_29_1",
+    locale: %{"force" => false},
+    name: "Demo Course For Testing Purpose - NBC",
+    organization: false,
+    readOnly: false,
+    ultraStatus: "Classic",
+    uuid: "250dfb5f3cc3428eb84dc8d7cd11ea87"
+  }
+
+  """
   def new_from_json(json) do
     my_map = Poison.decode!(json)
-    %Course{json: json, map: my_map}
+    course = Learn.RestUtil.to_struct(Learn.Course, my_map)
   end
 
   @doc """
