@@ -13,6 +13,7 @@ defmodule Learn.Course do
   %Learn.Course{
     allowGuests: true,
     availability: %{"available" => "Yes", "duration" => %{"type" => "Continuous"}},
+    closedComplete: false,
     courseId: "1",
     created: "2018-02-15T19:50:25.933Z",
     dataSourceId: "_140_1",
@@ -23,7 +24,7 @@ defmodule Learn.Course do
     locale: %{"force" => false},
     name: "Demo Course For Testing Purpose - NBC",
     organization: false,
-    readOnly: false,
+    readOnly: nil,
     ultraStatus: "Classic",
     uuid: "250dfb5f3cc3428eb84dc8d7cd11ea87"
   }
