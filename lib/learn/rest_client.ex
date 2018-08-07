@@ -223,9 +223,29 @@ defmodule Learn.RestClient do
 
   ## Functions that call the v2_courses endpoint
 
+  def get_v2_course(rest_client, course_id) do
+    url = "https://#{rest_client.fqdn}#{@v2_courses}/#{course_id}"
+    headers = [{"Content-Type",  "application/json"}, {"Authorization", "Bearer #{rest_client.token["access_token"]}"}]
+    options = []
+    {code, response} = HTTPoison.get url, headers, options
+  end
+
+  @doc """
+    Call the v2_courses endpoint, include a map of the parameters that is turned
+    into a parameter list and attached to the URL we make the request to.
+  """
+  def get_v2_courses(rest_client, params \\ %{}) do
+    params = %{offset: 0} |> Map.merge(params)
+    paramlist = URI.encode_query(params) # Turn the map into a parameter list string in one fell swoop.
+    url = "https://#{rest_client.fqdn}#{@v2_courses}?#{paramlist}"
+    headers = [{"Content-Type",  "application/json"}, {"Authorization", "Bearer #{rest_client.token["access_token"]}"}]
+    options = []
+    {code, response} = HTTPoison.get url, headers, options
+  end
+
   ## COURSES convenience methods to call the latest version
   def get_course(rest_client, course_id) do
-    {code, response} = get_v1_course(rest_client, course_id)
+    {code, response} = get_v2_course(rest_client, course_id)
   end
 
   @doc """
@@ -233,7 +253,7 @@ defmodule Learn.RestClient do
     into a parameter list and attached to the URL we make the request to.
   """
   def get_courses(rest_client, params \\ %{}) do
-    {code, response} = get_v1_courses(rest_client, params ) 
+    {code, response} = get_v2_courses(rest_client, params )
   end
 
   ## Functions that call the @v1_dataSources endpoints

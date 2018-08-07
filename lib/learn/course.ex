@@ -2,7 +2,7 @@ defmodule Learn.Course do
   alias Learn.{Course}
   import Poison
 
-  defstruct [:allowGuests, :availability, :courseId, :created, :dataSourceId, :enrollment, :externalAccessUrl,
+  defstruct [:allowGuests, :availability, :closedComplete, :courseId, :created, :dataSourceId, :enrollment, :externalAccessUrl,
    :guestAccessUrl, :id, :locale, :name, :organization, :readOnly, :ultraStatus, :uuid]
 
   @doc """
