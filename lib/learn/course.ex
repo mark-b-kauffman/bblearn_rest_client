@@ -2,8 +2,9 @@ defmodule Learn.Course do
   alias Learn.{Course}
   import Poison
 
-  defstruct [:allowGuests, :availability, :closedComplete, :courseId, :created, :dataSourceId, :enrollment, :externalAccessUrl,
-   :guestAccessUrl, :id, :locale, :name, :organization, :readOnly, :ultraStatus, :uuid]
+  defstruct [:allowGuests, :availability, :closedComplete, :courseId, :created,
+   :dataSourceId, :enrollment, :externalAccessUrl, :guestAccessUrl, :id,
+   :locale, :name, :organization, :readOnly, :ultraStatus, :uuid]
 
   @doc """
   Create a new Course from the JSON that comes back from GET /courses/course_id
@@ -13,6 +14,9 @@ defmodule Learn.Course do
   %Learn.Course{
     allowGuests: true,
     availability: %{"available" => "Yes", "duration" => %{"type" => "Continuous"}},
+    OR: availability: %{"available" => "Yes",
+                    "duration" => %{"end" => "2025-08-15T03:59:59.000Z", "start" => "2018-08-13T04:00:00.000Z",
+                    "type" => "DateRange"}},
     closedComplete: false,
     courseId: "1",
     created: "2018-02-15T19:50:25.933Z",
