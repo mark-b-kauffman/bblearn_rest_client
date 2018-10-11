@@ -59,11 +59,9 @@ defmodule Learn.RestUtil, do: (
   %Learn.Dsk{description: nil, externalId: nil, id: nil}
   """
   def listofmaps_to_structs(struct_type, list_of_maps) do
-
+    list_of_structs =[]
     if list_of_maps, do: (
       list_of_structs = for n <- list_of_maps, do: RestUtil.to_struct(struct_type, n)
-    ), else: (
-      list_of_structs = []
     )
     {:ok, list_of_structs}
   end

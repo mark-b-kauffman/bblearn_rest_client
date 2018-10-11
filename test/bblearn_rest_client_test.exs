@@ -119,3 +119,4 @@ defmodule BblearnRestClientTest do
   end
 
 end
+
