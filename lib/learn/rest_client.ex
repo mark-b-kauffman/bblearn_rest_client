@@ -148,6 +148,13 @@ defmodule Learn.RestClient do
 
   """
   def authorize(rest_client, code, redirect_uri) do
+    # If you're new to Elixir, like I am, the following looks 'interesting'.
+    # Demystified: The case statement takes the results of the post_ and pattern matches them
+    # into a code and a response. The code can be :ok, or something else. If it's :ok then
+    # we create a token by decoding the response.body. If it's _ (something else) then
+    # we raise an exception. Once we have our token we pattern match again. If the token
+    # consists of a map that contains "access_token", "token_type", and "expires_in", then
+    # we're good and we create & return a new RestClient that also contains the token.
     case {code, response} = post_oauth2_token(rest_client, code, redirect_uri) do
       {:ok, response} -> {:ok, token} = Poison.decode(response.body)
       {_, response } -> raise("rest_client: #{inspect rest_client} code: #{Atom.to_string(code)} response: #{inspect response}")
