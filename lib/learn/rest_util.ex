@@ -60,7 +60,7 @@ defmodule Learn.RestUtil, do: (
   """
   def listofmaps_to_structs(struct_type, list_of_maps) do
     list_of_structs =[]
-    if list_of_maps, do: (
+    list_of_structs = if list_of_maps, do: (
       list_of_structs = for n <- list_of_maps, do: RestUtil.to_struct(struct_type, n)
     )
     {:ok, list_of_structs}
@@ -81,6 +81,10 @@ defmodule Learn.RestUtil, do: (
   iex(7)> LearnRestUtil.to_struct(Learn.Dsk, dsk2)
   %Learn.Dsk{description: "some description", externalId: "an ext Id", id: "_1_3"}
   """
+  def course_to_struct(Learn.Course, attrs) do
+    to_struct(Learn.Course, attrs)
+  end
+
   def to_struct(kind, attrs) do
     struct = struct(kind)
     Enum.reduce Map.to_list(struct), struct, fn {k, _}, acc ->

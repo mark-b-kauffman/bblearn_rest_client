@@ -1,4 +1,5 @@
 defmodule Learn.RestClient do
+  require IEx
   @moduledoc """
   Learn.RestClient
   Abstraction of Blackboard Learn REST APIs for Elixir.
@@ -50,8 +51,12 @@ defmodule Learn.RestClient do
   """
 
   alias Learn.{RestClient}
+  alias Learn.Course
+  alias Learn.RestUtil
+
   import HTTPoison
   import Poison
+
   # oauth
   @v1_oauth2_token "/learn/api/public/v1/oauth2/token"                          # Since: 2015.11.0
   @v1_oauth2_authorization_code "/learn/api/public/v1/oauth2/authorizationcode" # Since: 3200.7.0
@@ -62,6 +67,8 @@ defmodule Learn.RestClient do
   @v2_courses "/learn/api/public/v2/courses"                                    # Since: 3400.8.0
 
   @v1_dataSources "/learn/api/public/v1/dataSources"                            # Since: 3000.1.0
+
+  @v1_lti_placements "/learn/api/public/v1/lti/placements"                      # Since: 3300.0.0
 
   @v1_users "/learn/api/public/v1/users"                                        # Since: 3000.1.0
 
@@ -108,15 +115,14 @@ defmodule Learn.RestClient do
     options = [hackney: [basic_auth: {"#{rest_client.key}", "#{rest_client.secret}"}] ]
     body =""
     url = ""
-    case code do
+    {url, body} = case code do
       0 ->
-        url = "https://#{rest_client.fqdn}#{@v1_oauth2_token}"
-        body = "grant_type=client_credentials"
+        {"https://#{rest_client.fqdn}#{@v1_oauth2_token}",  "grant_type=client_credentials" }
       _ ->
-        url = "https://#{rest_client.fqdn}#{@v1_oauth2_token}" <> "?code=#{code}&redirect_uri=#{redirect_uri}"
-        body = "grant_type=authorization_code"
+        {"https://#{rest_client.fqdn}#{@v1_oauth2_token}" <> "?code=#{code}&redirect_uri=#{redirect_uri}",  "grant_type=authorization_code"}
     end
-    # IO.puts :stdio, "Calling HTTPoison.post"
+    IO.puts :stdio, "Calling HTTPoison.post"
+
     {code, respone} = HTTPoison.post url, body, headers, options
   end
 
@@ -155,7 +161,8 @@ defmodule Learn.RestClient do
     # we raise an exception. Once we have our token we pattern match again. If the token
     # consists of a map that contains "access_token", "token_type", and "expires_in", then
     # we're good and we create & return a new RestClient that also contains the token.
-    case {code, response} = post_oauth2_token(rest_client, code, redirect_uri) do
+
+    {code, token} = case {code, response} = post_oauth2_token(rest_client, code, redirect_uri) do
       {:ok, response} -> {:ok, token} = Poison.decode(response.body)
       {_, response } -> raise("rest_client: #{inspect rest_client} code: #{Atom.to_string(code)} response: #{inspect response}")
     end
@@ -307,7 +314,15 @@ defmodule Learn.RestClient do
 
   ## COURSES convenience methods to call the latest version
   def get_course(rest_client, course_id) do
-    {code, response} = get_v2_course(rest_client, course_id)
+
+    {code, course} = case {code, response} = get_v2_course(rest_client, course_id) do
+      {:ok, response} -> {:ok, course} = Poison.decode(response.body)
+      {_, response } -> raise("rest_client: #{inspect rest_client} code: #{Atom.to_string(code)} response: #{inspect response}")
+    end
+    case {code, course}  do
+      {:ok, course} -> {:ok, Learn.RestUtil.to_struct(Learn.Course, course)}
+      {_, _} -> raise("rest_client: #{inspect rest_client} code: #{Atom.to_string(code)} course: #{inspect course}")
+    end
   end
 
   @doc """
@@ -328,7 +343,26 @@ defmodule Learn.RestClient do
     {code, response} = HTTPoison.get url, headers, options
   end
 
-  ## Functions that call the v1_system_* endpoints
+## LTI
+  ## Functions that call the @v1_lti endpoints
+
+  def get_v1_lti_placements(rest_client, params \\ %{}) do
+    params = %{offset: 0} |> Map.merge(params)
+    paramlist = URI.encode_query(params) # Turn the map into a parameter list string in one fell swoop.
+    url = "https://#{rest_client.fqdn}#{@v1_lti_placements}?#{paramlist}"
+    headers = [{"Content-Type",  "application/json"}, {"Authorization", "Bearer #{rest_client.token["access_token"]}"}]
+    options = []
+    {code, response} = HTTPoison.get url, headers, options
+  end
+
+## LTI convenience functions that call the current version
+
+  def get_lti_placements(rest_client, params \\ %{}) do
+    {code, response} = get_v1_lti_placements(rest_client, params)
+  end
+
+## SYSTEM
+
   @doc """
   Get the Learn version information.
   Example use:
@@ -339,6 +373,8 @@ defmodule Learn.RestClient do
     url = "https://#{rest_client.fqdn}#{@v1_system_version}"
     {code, response} = HTTPoison.get url
   end
+
+   ## USERS
 
   ## Functions that call the v1_users endpoint
   def get_user(rest_client, user_id) do
