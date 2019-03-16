@@ -174,6 +174,32 @@ defmodule Learn.RestClient do
     authorize(rest_client, 0, "")
   end
 
+  @doc """
+    Method to take in any /learn enpoint and GET the response.
+  """
+  def get_endpoint(rest_client, url_path, params \\ %{} ) do
+    params = %{offset: 0} |> Map.merge(params)
+    paramlist = URI.encode_query(params) # Turn the map into a parameter list string in one fell swoop.
+    url = "https://#{rest_client.fqdn}#{url_path}?#{paramlist}"
+    headers = [{"Content-Type",  "application/json"}, {"Authorization", "Bearer #{rest_client.token["access_token"]}"}]
+    options = []
+    {code, response} = HTTPoison.get url, headers, options
+  end
+
+  @doc """
+        Method to POST to any /learn enpoint.
+        map_of_bodyvals example: x = %{"courseId" => "mbK_514_1"}
+  """
+  def post_endpoint(rest_client, url_path, map_of_bodyvals, params \\ %{} ) do
+    params = %{offset: 0} |> Map.merge(params)
+    paramlist = URI.encode_query(params) # Turn the map into a parameter list string in one fell swoop.
+    url = "https://#{rest_client.fqdn}#{url_path}?#{paramlist}"
+    body = Poison.encode!(map_of_bodyvals)
+    headers = [{"Content-Type",  "application/json"}, {"Authorization", "Bearer #{rest_client.token["access_token"]}"}]
+    options = []
+    {code, response} = HTTPoison.post url, body, headers, options
+    {code, response}
+  end
 end
 
 

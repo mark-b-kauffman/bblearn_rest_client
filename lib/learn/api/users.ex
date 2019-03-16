@@ -18,7 +18,10 @@ defmodule Learn.Api.Users do
     url = "https://#{rest_client.fqdn}#{@v1_users}/#{user_id}"
     headers = [{"Content-Type",  "application/json"}, {"Authorization", "Bearer #{rest_client.token["access_token"]}"}]
     options = []
-    {code, response} = HTTPoison.get url, headers, options
+    {code, user_model} = case {code, response} = HTTPoison.get url, headers, options do
+      {:ok, _} ->  Poison.decode(response.body)
+      {_, _} -> raise("rest_client: #{inspect rest_client} code: #{Atom.to_string(code)} response: #{inspect response}")
+    end
   end
 
   @doc """

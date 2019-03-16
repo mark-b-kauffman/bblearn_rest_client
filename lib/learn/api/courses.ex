@@ -4,6 +4,7 @@ defmodule Learn.Api.Courses do
   Learn.Api.Courses
   """
   alias Learn.Api.Courses
+  alias Learn.RestClient
   alias Learn.RestUtil
 
   import HTTPoison
@@ -76,6 +77,40 @@ defmodule Learn.Api.Courses do
   """
   def get_courses(rest_client, params \\ %{}) do
     {code, response} = get_v2_courses(rest_client, params )
+  end
+
+
+  @doc """
+    post_v1_courses_copy(rest_client, course_id, reqCourseObjToConvert, params \\ %{} )
+    Call POST /learn/api/public/v1/courses/{courseId}/copy
+    {courseId} is the existing course.
+    reqCourseObjToConvert is the Elixir representation of the json for the course to copy into.
+    iex(35)> x = %{"courseId" => "mbK_514_1"}
+    x = %{"courseId" => "mbK_514_1"}
+    iex(36)> Poison.encode!(x)
+    "{\"courseId\":\"mbK_514_1\"}"
+    iex(37)> Api.Courses.post_v1_courses_copy(rcauth, "_514_1", x )
+    {:ok,
+    %HTTPoison.Response{
+     body: "{}",
+     headers: [
+        {"Cache-Control", "private"},
+        {"Cache-Control", "max-age=0"},
+        {"Cache-Control", "no-store"},
+        {"Cache-Control", "must-revalidate"},
+        {"Cache-control", "no-cache=\"set-cookie\""},
+        {"Content-Security-Policy", "frame-ancestors 'self'"},
+        {"Content-Type", "application/json;charset=UTF-8"},
+        {"Date", "Fri, 15 Mar 2019 22:06:46 GMT"},
+        {"Expires", "Thu, 15 Mar 2018 22:06:45 GMT"},
+        {"Last-Modified", "Mon, 15 Mar 1999 23:06:45 GMT"},
+        {"Location", "/learn/api/public/v1/courses/_657_1/tasks/_6877_1"}, <-- track the copy progress
+  """
+  def post_v1_courses_copy(rest_client, course_id, reqCourseObjToConvert, params \\ %{} ) do
+    params = %{offset: 0} |> Map.merge(params)
+    url_path = "#{@v1_courses}/#{course_id}/copy"
+    {code, response} = RestClient.post_endpoint(rest_client, url_path, reqCourseObjToConvert, params )
+    {code, response}
   end
 
 end
