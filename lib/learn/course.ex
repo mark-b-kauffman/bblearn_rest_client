@@ -1,6 +1,4 @@
 defmodule Learn.Course do
-  alias Learn.{Course}
-  import Poison
 
   defstruct [:allowGuests, :availability, :closedComplete, :courseId, :created,
    :dataSourceId, :enrollment, :externalAccessUrl, :guestAccessUrl, :id,
@@ -33,10 +31,35 @@ defmodule Learn.Course do
     uuid: "250dfb5f3cc3428eb84dc8d7cd11ea87"
   }
 
+  iex(2)> my_course = %Learn.Course{allowGuests: true, availability: %{"available" => "Yes", "duration" => %{"type" => "Continuous"}}, courseId: "mbk-test1", dataSourceId: "externalId:SYSTEM", enrollment: %{"type" => "InstructorLed"}, name: "Demo Course For Testing Purpose - mbk-test1", ultraStatus: "Classic"}
+  %Learn.Course{
+      allowGuests: true,
+      availability: %{"available" => "Yes", "duration" => %{"type" => "Continuous"}},
+      closedComplete: nil,
+      courseId: "mbk-test1",
+      created: nil,
+      dataSourceId: "externalId:SYSTEM",
+      enrollment: %{"type" => "InstructorLed"},
+      externalAccessUrl: nil,
+      guestAccessUrl: nil,
+      id: nil,
+      locale: nil,
+      name: "Demo Course For Testing Purpose - mbk-test1",
+      organization: nil,
+      readOnly: nil,
+      ultraStatus: "Classic",
+      uuid: nil
+    }
+
+  iex(4)> { status, json }  = Poison.encode(my_course)
+  {:ok,
+    "{\"uuid\":null,\"ultraStatus\":\"Classic\",\"readOnly\":null,\"organization\":null,\"name\":\"Demo Course For Testing Purpose - mbk-test1\",\"locale\":null,\"id\":null,\"guestAccessUrl\":null,\"externalAccessUrl\":null,\"enrollment\":{\"type\":\"InstructorLed\"},\"dataSourceId\":\"externalId:SYSTEM\",\"created\":null,\"courseId\":\"mbk-test1\",\"closedComplete\":null,\"availability\":{\"duration\":{\"type\":\"Continuous\"},\"available\":\"Yes\"},\"allowGuests\":true}"}
+
   """
-  def new_from_json(json) do
+  def new_from_json(json) do # returns a Course
     my_map = Poison.decode!(json)
     course = Learn.RestUtil.to_struct(Learn.Course, my_map)
+    course
   end
 
   @doc """

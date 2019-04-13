@@ -22,8 +22,8 @@ defmodule Learn.Api.Courses do
   alias Learn.RestClient
   alias Learn.RestUtil
 
-  import HTTPoison
-  import Poison
+  # import HTTPoison
+  # import Poison
 
   @v1_courses "/learn/api/public/v1/courses"                                    # Since: 3000.1.0
   @v2_courses "/learn/api/public/v2/courses"                                    # Since: 3400.8.0
@@ -58,6 +58,7 @@ defmodule Learn.Api.Courses do
     headers = [{"Content-Type",  "application/json"}, {"Authorization", "Bearer #{rest_client.token["access_token"]}"}]
     options = []
     {code, response} = HTTPoison.get url, headers, options
+    {code, response}
   end
 
   @doc """
@@ -71,19 +72,29 @@ defmodule Learn.Api.Courses do
     headers = [{"Content-Type",  "application/json"}, {"Authorization", "Bearer #{rest_client.token["access_token"]}"}]
     options = []
     {code, response} = HTTPoison.get url, headers, options
+    {code, response}
+  end
+
+  def post_v2_courses(rest_client, course, params \\ %{}) do
+    params = %{offset: 0} |> Map.merge(params)
+    paramlist = URI.encode_query(params) # Turn the map into a parameter list string in one fell swoop.
+    body = Poison.encode!(course)
+    url = "https://#{rest_client.fqdn}#{@v2_courses}?#{paramlist}"
+    headers = [{"Content-Type",  "application/json"}, {"Authorization", "Bearer #{rest_client.token["access_token"]}"}]
+    options = []
+    {code, response} = HTTPoison.post url, body, headers, options
+    {code, response}
   end
 
   ## COURSES convenience methods to call the latest version
   def get_course(rest_client, course_id) do
 
-    {code, course} = case {code, response} = get_v2_course(rest_client, course_id) do
-      {:ok, response} -> {:ok, course} = Poison.decode(response.body)
+    {code, course} = case {code, _} = get_v2_course(rest_client, course_id) do
+      {:ok, response} -> {:ok, _} = Poison.decode(response.body)
       {_, response } -> raise("rest_client: #{inspect rest_client} code: #{Atom.to_string(code)} response: #{inspect response}")
     end
-    case {code, course}  do
-      {:ok, course} -> {:ok, Learn.RestUtil.to_struct(Learn.Course, course)}
-      {_, _} -> raise("rest_client: #{inspect rest_client} code: #{Atom.to_string(code)} course: #{inspect course}")
-    end
+
+    {code, Learn.RestUtil.to_struct(Learn.Course, course)}
   end
 
   @doc """
