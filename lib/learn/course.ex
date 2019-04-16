@@ -2,7 +2,8 @@ defmodule Learn.Course do
 
   defstruct [:allowGuests, :availability, :closedComplete, :courseId, :created,
    :dataSourceId, :enrollment, :externalAccessUrl, :guestAccessUrl, :id,
-   :locale, :name, :organization, :readOnly, :ultraStatus, :uuid]
+  :locale, :name, :organization, :ultraStatus, :uuid]
+   #v1 no readonly in v2 :locale, :name, :organization, :readOnly, :ultraStatus, :uuid]
 
   @doc """
   Create a new Course from the JSON that comes back from GET /courses/course_id

@@ -18,9 +18,10 @@ defmodule Learn.Api.Courses do
 
 
   """
-  alias Learn.Api.Courses
+
+  alias Learn.Course
   alias Learn.RestClient
-  alias Learn.RestUtil
+
 
   # import HTTPoison
   # import Poison
@@ -75,7 +76,7 @@ defmodule Learn.Api.Courses do
     {code, response}
   end
 
-  def post_v2_courses(rest_client, course, params \\ %{}) do
+  def post_v2_course(rest_client, course, params \\ %{}) do
     params = %{offset: 0} |> Map.merge(params)
     paramlist = URI.encode_query(params) # Turn the map into a parameter list string in one fell swoop.
     body = Poison.encode!(course)
@@ -95,6 +96,14 @@ defmodule Learn.Api.Courses do
     end
 
     {code, Learn.RestUtil.to_struct(Learn.Course, course)}
+  end
+
+  def post_course(rest_client,course, params \\ %{}) do
+    {code, rcourse} = case {code, _} = post_v2_course(rest_client, course, params) do
+      {:ok, response} -> {:ok, _} = {:ok, Course.new_from_json(response.body) }
+      {_, response } -> raise("rest_client: #{inspect rest_client} code: #{Atom.to_string(code)} response: #{inspect response}")
+    end
+    {code, course}
   end
 
   @doc """
