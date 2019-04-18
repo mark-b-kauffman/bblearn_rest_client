@@ -22,6 +22,7 @@ defmodule Learn.Api.System do
     # GET /learn/api/public/v1/system/version
     url = "https://#{rest_client.fqdn}#{@v1_system_version}"
     {code, response} = HTTPoison.get url
+    {code, response}
   end
 
 

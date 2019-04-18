@@ -21,12 +21,14 @@ defmodule Learn.Api.Lti do
     headers = [{"Content-Type",  "application/json"}, {"Authorization", "Bearer #{rest_client.token["access_token"]}"}]
     options = []
     {code, response} = HTTPoison.get url, headers, options
+    {code, response}
   end
 
 ## LTI convenience functions that call the current version
 
   def get_lti_placements(rest_client, params \\ %{}) do
     {code, response} = get_v1_lti_placements(rest_client, params)
+    {code, response}
   end
 
 end

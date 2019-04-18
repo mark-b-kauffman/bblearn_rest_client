@@ -21,6 +21,7 @@ defmodule Learn.Api.Announcements do
     headers = [{"Content-Type",  "application/json"}, {"Authorization", "Bearer #{rest_client.token["access_token"]}"}]
     options = []
     {code, response} = HTTPoison.get url, headers, options
+    {code, response}  # necessary for documenting the return objects w/o a warning on the prior line.
   end
 
 end

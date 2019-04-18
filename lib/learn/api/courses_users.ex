@@ -26,11 +26,13 @@ defmodule Learn.Api.CoursesUsers do
     headers = [{"Content-Type",  "application/json"}, {"Authorization", "Bearer #{rest_client.token["access_token"]}"}]
     options = []
     {code, response} = HTTPoison.get url, headers, options
+    {code, response}
   end
 
   ## course memberships convenience methods to call the lastest version
   def get_courses_users(rest_client, courseId, params \\ %{}) do
     {code, response} = get_v1_courses_users(rest_client, courseId, params)
+    {code, response}
   end
 
 

@@ -1,0 +1,25 @@
+Starting Out Examples
+FIRST GET
+iex(3)> headers = [{"Content-Type",  "application/json"}]
+[{"Content-Type", "application/json"}]
+iex(4)> options = []
+[]
+iex(5)> url = "https://bd-partner-a-original.blackboard.com/learn/api/public/v1/system/version"
+"https://bd-partner-a-original.blackboard.com/learn/api/public/v1/system/version"
+iex(6)> {code, response} = HTTPoison.get url, headers, options
+
+iex(9)> response.body
+"{\"learn\":{\"major\":3600,\"minor\":0,\"patch\":0,\"build\":\"rel.9+22b493d\"}}"
+
+iex(10)> Poison.decode response.body
+{:ok,
+ %{
+   "learn" => %{
+     "build" => "rel.9+22b493d",
+     "major" => 3600,
+     "minor" => 0,
+     "patch" => 0
+   }
+ }}
+
+ 

@@ -3,11 +3,11 @@ defmodule Learn.Api.Users do
   @moduledoc """
   Learn.Api.Courses
   """
-  alias Learn.Api.Users
-  alias Learn.RestUtil
+  # alias Learn.Api.Users
+  # alias Learn.RestUtil
 
-  import HTTPoison
-  import Poison
+  # import HTTPoison
+  # import Poison
 
   @v1_users "/learn/api/public/v1/users"                                        # Since: 3000.1.0
 
@@ -18,10 +18,8 @@ defmodule Learn.Api.Users do
     url = "https://#{rest_client.fqdn}#{@v1_users}/#{user_id}"
     headers = [{"Content-Type",  "application/json"}, {"Authorization", "Bearer #{rest_client.token["access_token"]}"}]
     options = []
-    {code, user_model} = case {code, response} = HTTPoison.get url, headers, options do
-      {:ok, _} ->  Poison.decode(response.body)
-      {_, _} -> raise("rest_client: #{inspect rest_client} code: #{Atom.to_string(code)} response: #{inspect response}")
-    end
+    {code, response} = HTTPoison.get url, headers, options
+    {code, response}
   end
 
   @doc """
@@ -35,6 +33,7 @@ defmodule Learn.Api.Users do
     headers = [{"Content-Type",  "application/json"}, {"Authorization", "Bearer #{rest_client.token["access_token"]}"}]
     options = []
     {code, response} = HTTPoison.get url, headers, options
+    {code, response}
   end
 
   def get_users_courses(rest_client, user_id) do
@@ -42,6 +41,18 @@ defmodule Learn.Api.Users do
     headers = [{"Content-Type",  "application/json"}, {"Authorization", "Bearer #{rest_client.token["access_token"]}"}]
     options = []
     {code, response} = HTTPoison.get url, headers, options
+    {code, response}
+  end
+
+  def post_v1_user(rest_client, user, params \\ %{}) do
+    params = %{offset: 0} |> Map.merge(params)
+    paramlist = URI.encode_query(params) # Turn the map into a parameter list string in one fell swoop.
+    body = Poison.encode!(user)
+    url = "https://#{rest_client.fqdn}#{@v1_users}?#{paramlist}"
+    headers = [{"Content-Type",  "application/json"}, {"Authorization", "Bearer #{rest_client.token["access_token"]}"}]
+    options = []
+    {code, response} = HTTPoison.post url, body, headers, options
+    {code, response}
   end
 
 end

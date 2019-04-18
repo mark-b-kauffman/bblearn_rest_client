@@ -37,6 +37,7 @@ defmodule Learn.Api.Courses do
     headers = [{"Content-Type",  "application/json"}, {"Authorization", "Bearer #{rest_client.token["access_token"]}"}]
     options = []
     {code, response} = HTTPoison.get url, headers, options
+    {code, response}
   end
 
   @doc """
@@ -50,12 +51,15 @@ defmodule Learn.Api.Courses do
     headers = [{"Content-Type",  "application/json"}, {"Authorization", "Bearer #{rest_client.token["access_token"]}"}]
     options = []
     {code, response} = HTTPoison.get url, headers, options
+    {code, response}
   end
 
   ## Functions that call the v2_courses endpoint
 
-  def get_v2_course(rest_client, course_id) do
-    url = "https://#{rest_client.fqdn}#{@v2_courses}/#{course_id}"
+  def get_v2_course(rest_client, course_id, params \\ %{}) do
+    params = %{offset: 0} |> Map.merge(params)
+    paramlist = URI.encode_query(params) # Turn the map into a parameter list string in one fell swoop.
+    url = "https://#{rest_client.fqdn}#{@v2_courses}/#{course_id}?#{paramlist}"
     headers = [{"Content-Type",  "application/json"}, {"Authorization", "Bearer #{rest_client.token["access_token"]}"}]
     options = []
     {code, response} = HTTPoison.get url, headers, options
@@ -88,22 +92,17 @@ defmodule Learn.Api.Courses do
   end
 
   ## COURSES convenience methods to call the latest version
-  def get_course(rest_client, course_id) do
-
-    {code, course} = case {code, _} = get_v2_course(rest_client, course_id) do
-      {:ok, response} -> {:ok, _} = Poison.decode(response.body)
-      {_, response } -> raise("rest_client: #{inspect rest_client} code: #{Atom.to_string(code)} response: #{inspect response}")
-    end
-
-    {code, Learn.RestUtil.to_struct(Learn.Course, course)}
+  def get_course(rest_client, course_id, params \\ %{}) do
+    {code, response }= get_v2_course(rest_client, course_id, params)
+    {code, response}
   end
 
   def post_course(rest_client,course, params \\ %{}) do
-    {code, rcourse} = case {code, _} = post_v2_course(rest_client, course, params) do
+    {code, response} = case {code, _} = post_v2_course(rest_client, course, params) do
       {:ok, response} -> {:ok, _} = {:ok, Course.new_from_json(response.body) }
       {_, response } -> raise("rest_client: #{inspect rest_client} code: #{Atom.to_string(code)} response: #{inspect response}")
     end
-    {code, course}
+    {code, response}
   end
 
   @doc """
@@ -138,6 +137,7 @@ defmodule Learn.Api.Courses do
   """
   def get_courses(rest_client, params \\ %{}) do
     {code, response} = get_v2_courses(rest_client, params )
+    {code, response}
   end
 
 

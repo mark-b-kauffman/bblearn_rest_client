@@ -62,6 +62,7 @@ defmodule Learn.Api.CoursesContents do
     headers = [{"Content-Type",  "application/json"}, {"Authorization", "Bearer #{rest_client.token["access_token"]}"}]
     options = []
     {code, response} = HTTPoison.post url, body, headers, options
+    {code, response}
   end
 
 end
