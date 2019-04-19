@@ -56,11 +56,10 @@ defmodule Learn.RestClient do
   """
 
   alias Learn.{RestClient}
-  alias Learn.Course
-  alias Learn.RestUtil
 
-  import HTTPoison
-  import Poison
+
+
+
 
   # oauth
   @v1_oauth2_token "/learn/api/public/v1/oauth2/token"                          # Since: 2015.11.0
@@ -84,12 +83,12 @@ defmodule Learn.RestClient do
     }
 
     iex(3)> rc = Learn.RestClient.new("bd-partner-a-original.blackboard.com", System.get_env("APP_KEY"), System.get_env("APP_SECRET"))
-%Learn.RestClient{
-  token: nil,
-  fqdn: "bd-partner-a-original.blackboard.com",
-  key: "d128e50d-c91e-47d3-a97e-9d0c8a77fb5d",
-  secret: "xyzzy"
-}
+    %Learn.RestClient{
+      token: nil,
+      fqdn: "bd-partner-a-original.blackboard.com",
+      key: "d128e50d-c91e-47d3-a97e-9d0c8a77fb5d",
+      secret: "xyzzy"
+    }
 
   """
   def new(fqdn, key, secret) do
@@ -103,8 +102,7 @@ defmodule Learn.RestClient do
   def post_oauth2_token(rest_client, code, redirect_uri) do
     headers = [{"Content-Type",  "application/x-www-form-urlencoded"}]
     options = [hackney: [basic_auth: {"#{rest_client.key}", "#{rest_client.secret}"}] ]
-    body =""
-    url = ""
+
     {url, body} = case code do
       0 ->
         {"https://#{rest_client.fqdn}#{@v1_oauth2_token}",  "grant_type=client_credentials" }
@@ -113,7 +111,8 @@ defmodule Learn.RestClient do
     end
     IO.puts :stdio, "Calling HTTPoison.post"
 
-    {code, respone} = HTTPoison.post url, body, headers, options
+    {code, response} = HTTPoison.post url, body, headers, options
+    {code, response}
   end
 
   @doc """
@@ -129,8 +128,8 @@ defmodule Learn.RestClient do
     https://localhost/?code=oDNloDmgqEFbPoSRCYjKKskQMBIYjWp6
 
     iex(4)> rcauth = Learn.RestClient.authorize(rc, "oDNloDmgqEFbPoSRCYjKKskQMBIYjWp6", "https://localhost")
-%Learn.RestClient{
-  token: %{
+  %Learn.RestClient{
+    token: %{
     "access_token" => "qm1vVtvjR05Zs405YIvzOwGY2aJQ809f",
     "expires_in" => 3599,
     "scope" => "read",
@@ -140,7 +139,7 @@ defmodule Learn.RestClient do
   fqdn: "bd-partner-a-original.blackboard.com",
   key: "d128e50d-c91e-47d3-a97e-9d0c8a77fb5d",
   secret: "xyzzy"
-}
+  }
 
   """
 
@@ -153,10 +152,14 @@ defmodule Learn.RestClient do
     # consists of a map that contains "access_token", "token_type", and "expires_in", then
     # we're good and we create & return a new RestClient that also contains the token.
 
-    {code, token} = case {code, response} = post_oauth2_token(rest_client, code, redirect_uri) do
-      {:ok, response} -> {:ok, token} = Poison.decode(response.body)
-      {_, response } -> raise("rest_client: #{inspect rest_client} code: #{Atom.to_string(code)} response: #{inspect response}")
+    {code, response} = post_oauth2_token(rest_client, code, redirect_uri)
+
+    {:ok, token} =
+    case {code, response} do
+        {:ok, response} ->  Poison.decode(response.body)
+        {_, response } -> raise("rest_client: #{inspect rest_client} code: #{Atom.to_string(code)} response: #{inspect response}")
     end
+
     case token do
       %{"access_token" => _, "token_type" => _, "expires_in" => _ } -> token
       _ -> raise("rest_client: #{inspect rest_client} token: #{inspect token}")
@@ -184,6 +187,7 @@ defmodule Learn.RestClient do
     headers = [{"Content-Type",  "application/json"}, {"Authorization", "Bearer #{rest_client.token["access_token"]}"}]
     options = []
     {code, response} = HTTPoison.get url, headers, options
+    {code, response}
   end
 
   @doc """

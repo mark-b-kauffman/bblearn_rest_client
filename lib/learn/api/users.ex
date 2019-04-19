@@ -55,4 +55,10 @@ defmodule Learn.Api.Users do
     {code, response}
   end
 
+  def post_user(rest_client, user, params \\ %{}) do
+    params = %{offset: 0} |> Map.merge(params)
+    {code, response} = post_v1_user(rest_client, user, params)
+    {code, response}
+  end
+
 end
