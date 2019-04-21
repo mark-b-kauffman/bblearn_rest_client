@@ -36,6 +36,19 @@ defmodule Learn.Api.CoursesUsers do
 
   ## COURSES USERS
   @doc """
+    Delete the course user
+  """
+  def delete_v1_courses_users(rest_client, courseId, userId, params \\ %{}) do
+    params = %{offset: 0} |> Map.merge(params)
+    paramlist = URI.encode_query(params) # Turn the map into a parameter list string in one fell swoop.
+    url = "https://#{rest_client.fqdn}#{@v1_courses}/#{courseId}/users/#{userId}?#{paramlist}"
+    headers = [{"Content-Type",  "application/json"}, {"Authorization", "Bearer #{rest_client.token["access_token"]}"}]
+    options = []
+    {code, response} = HTTPoison.delete url, headers, options
+    {code, response}
+  end
+
+  @doc """
     Call the v1_courses endpoint to get a course's users,
     include a map of the parameters that is turned
     into a parameter list and attached to the URL we make the request to.
