@@ -12,6 +12,13 @@ defmodule Learn.Api.Users do
   @v1_users "/learn/api/public/v1/users"                                        # Since: 3000.1.0
 
    ## USERS
+   def delete_user(rest_client, user_id) do
+    url = "https://#{rest_client.fqdn}#{@v1_users}/#{user_id}"
+    headers = [{"Content-Type",  "application/json"}, {"Authorization", "Bearer #{rest_client.token["access_token"]}"}]
+    options = []
+    {code, response} = HTTPoison.delete url, headers, options
+    {code, response}
+  end
 
   ## Functions that call the v1_users endpoint
   def get_user(rest_client, user_id) do

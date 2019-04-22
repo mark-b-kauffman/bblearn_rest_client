@@ -38,7 +38,7 @@ defmodule Learn.Api.CoursesUsers do
   @doc """
     Delete the course user
   """
-  def delete_v1_courses_users(rest_client, courseId, userId, params \\ %{}) do
+  def delete_v1_course_user(rest_client, courseId, userId, params \\ %{}) do
     params = %{offset: 0} |> Map.merge(params)
     paramlist = URI.encode_query(params) # Turn the map into a parameter list string in one fell swoop.
     url = "https://#{rest_client.fqdn}#{@v1_courses}/#{courseId}/users/#{userId}?#{paramlist}"
@@ -48,12 +48,17 @@ defmodule Learn.Api.CoursesUsers do
     {code, response}
   end
 
+  def delete_course_user(rest_client, courseId, userId, params \\ %{}) do
+    {code, response} = delete_v1_course_user(rest_client, courseId, userId, params)
+    {code, response}
+  end
+
   @doc """
     Call the v1_courses endpoint to get a course's users,
     include a map of the parameters that is turned
     into a parameter list and attached to the URL we make the request to.
   """
-  def get_v1_courses_users(rest_client, courseId, params \\ %{}) do
+  def get_v1_course_users(rest_client, courseId, params \\ %{}) do
     params = %{offset: 0} |> Map.merge(params)
     paramlist = URI.encode_query(params) # Turn the map into a parameter list string in one fell swoop.
     url = "https://#{rest_client.fqdn}#{@v1_courses}/#{courseId}/users?#{paramlist}"
@@ -64,8 +69,9 @@ defmodule Learn.Api.CoursesUsers do
   end
 
   ## course memberships convenience methods to call the lastest version
-  def get_courses_users(rest_client, courseId, params \\ %{}) do
-    {code, response} = get_v1_courses_users(rest_client, courseId, params)
+  def get_course_users(rest_client, courseId, params \\ %{}) do
+    params = %{offset: 0} |> Map.merge(params)
+    {code, response} = get_v1_course_users(rest_client, courseId, params)
     {code, response}
   end
 
@@ -86,7 +92,7 @@ defmodule Learn.Api.CoursesUsers do
   end
 
 
-  def post_v2_courses_users(rest_client, course_id, user_id, child_course \\ %{}, params \\ %{}) do
+  def put_v2_course_user(rest_client, course_id, user_id, child_course \\ %{}, params \\ %{}) do
     params = %{offset: 0} |> Map.merge(params)
     paramlist = URI.encode_query(params) # Turn the map into a parameter list string in one fell swoop.
     body = Poison.encode!(child_course)
@@ -97,8 +103,8 @@ defmodule Learn.Api.CoursesUsers do
     {code, response}
   end
 
-  def post_courses_users(rest_client, course_id, user_id, child_course \\ %{}, params \\ %{} ) do
-    {code, response} = post_v2_courses_users(rest_client, course_id, user_id, child_course, params)
+  def put_course_user(rest_client, course_id, user_id, child_course \\ %{}, params \\ %{} ) do
+    {code, response} = put_v2_course_user(rest_client, course_id, user_id, child_course, params)
     {code, response}
   end
 

@@ -2,6 +2,7 @@ defmodule BblearnRestClientTest do
 
   use ExUnit.Case
   alias Learn.RestClient
+  alias Learn.Api
   doctest BblearnRestClient
   # See config.exs app_key and app_secret are environment APP_KEY & APP_SECRET
   # Now we have a way to get access and test! Also need LEARN_SERVER
@@ -35,7 +36,7 @@ defmodule BblearnRestClientTest do
     assert Map.has_key?(rc, :token) == true
     rcauth = RestClient.authorize(rc)
     assert rcauth.token["token_type"] == "bearer"
-    {code, response} = RestClient.get_announcements(rcauth)
+    {code, response} = Api.Announcements.get_announcements(rcauth)
     assert code == :ok
     assert response.status_code == 200
   end
@@ -46,11 +47,11 @@ defmodule BblearnRestClientTest do
     assert Map.has_key?(rc, :token) == true
     rcauth = RestClient.authorize(rc)
     assert rcauth.token["token_type"] == "bearer"
-    {code, response} = RestClient.get_v1_course(rcauth, "courseId:1")
+    {code, response} = Api.Courses.get_course(rcauth, "courseId:mbk-original")
     assert code == :ok
     assert response.status_code == 200
 
-    {code, response} = RestClient.get_course(rcauth, "courseId:nocoursehere")
+    {code, response} = Api.Courses.get_course(rcauth, "courseId:nocoursehere")
     assert code == :ok
     assert response.status_code == 404
   end
@@ -61,18 +62,18 @@ defmodule BblearnRestClientTest do
     assert Map.has_key?(rc, :token) == true
     rcauth = RestClient.authorize(rc)
     assert rcauth.token["token_type"] == "bearer"
-    {code, response} = RestClient.get_courses(rcauth)
+    {code, response} = Api.Courses.get_courses(rcauth)
     assert code == :ok
     assert response.status_code == 200
   end
 
   test "get_courses_users" do
-    IO.puts "test: get_courses_users"
+    IO.puts "test: get_course_users"
     rc = RestClient.new(@learn_server, @app_key, @app_secret)
     assert Map.has_key?(rc, :token) == true
     rcauth = RestClient.authorize(rc)
     assert rcauth.token["token_type"] == "bearer"
-    {code, response} = RestClient.get_courses_users(rcauth, "courseId:1")
+    {code, response} = Api.CoursesUsers.get_course_users(rcauth, "courseId:mbk-original")
 
     assert code == :ok
     assert response.status_code == 200
@@ -84,7 +85,7 @@ defmodule BblearnRestClientTest do
     assert Map.has_key?(rc, :token) == true
     rcauth = RestClient.authorize(rc)
     assert rcauth.token["token_type"] == "bearer"
-    {code, response} = RestClient.get_dataSources(rcauth)
+    {code, response} = Api.Datasources.get_dataSources(rcauth)
     assert code == :ok
     assert response.status_code == 200
   end
@@ -95,7 +96,7 @@ defmodule BblearnRestClientTest do
     assert Map.has_key?(rc, :token) == true
     rcauth = RestClient.authorize(rc)
     assert rcauth.token["token_type"] == "bearer"
-    {code, response} = RestClient.get_system_version(rcauth)
+    {code, response} = Api.System.get_system_version(rcauth)
     assert code == :ok
     assert response.status_code == 200
   end
@@ -108,12 +109,12 @@ defmodule BblearnRestClientTest do
     assert rcauth.token["token_type"] == "bearer"
     # NOTE: We had userName:mkauffman, but that doesn't work unless you have
     # the REST APP configured with a user with the Learn Adamin System role.
-    {code, response} = RestClient.get_user(rcauth, "userName:mkauffman-student")
+    {code, response} = Api.Users.get_user(rcauth, "userName:mkauffman")
     # TODO: debug the phoenixdsk-user system role. It's not pulling the user.
     assert code == :ok
     assert response.status_code == 200
 
-    {code, response} = RestClient.get_user(rcauth, "userName:nonamehere")
+    {code, response} = Api.Users.get_user(rcauth, "userName:nonamehere")
     assert code == :ok
     assert response.status_code == 404
   end

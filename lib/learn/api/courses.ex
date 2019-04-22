@@ -19,7 +19,6 @@ defmodule Learn.Api.Courses do
 
   """
 
-  alias Learn.Course
   alias Learn.RestClient
 
 
@@ -32,8 +31,25 @@ defmodule Learn.Api.Courses do
     ## COURSES
 
   ## Functions that call the v1_courses endpoint
-  def get_v1_course(rest_client, course_id) do
-    url = "https://#{rest_client.fqdn}#{@v1_courses}/#{course_id}"
+  def delete_v2_course(rest_client, course_id, params \\ %{}) do
+    params = %{offset: 0} |> Map.merge(params)
+    paramlist = URI.encode_query(params) # Turn the map into a parameter list string in one fell swoop.
+    url = "https://#{rest_client.fqdn}#{@v2_courses}/#{course_id}?#{paramlist}"
+    headers = [{"Content-Type",  "application/json"}, {"Authorization", "Bearer #{rest_client.token["access_token"]}"}]
+    options = []
+    {code, response} = HTTPoison.delete url, headers, options
+    {code, response}
+  end
+
+  def delete_course(rest_client, course_id, params \\ %{}) do
+    {code, response} = delete_v2_course(rest_client, course_id, params)
+    {code, response}
+  end
+
+  def get_v1_course(rest_client, course_id, params \\ %{}) do
+    params = %{offset: 0} |> Map.merge(params)
+    paramlist = URI.encode_query(params) # Turn the map into a parameter list string in one fell swoop.
+    url = "https://#{rest_client.fqdn}#{@v1_courses}/#{course_id}?#{paramlist}"
     headers = [{"Content-Type",  "application/json"}, {"Authorization", "Bearer #{rest_client.token["access_token"]}"}]
     options = []
     {code, response} = HTTPoison.get url, headers, options
@@ -98,10 +114,7 @@ defmodule Learn.Api.Courses do
   end
 
   def post_course(rest_client,course, params \\ %{}) do
-    {code, response} = case {code, _} = post_v2_course(rest_client, course, params) do
-      {:ok, response} -> {:ok, _} = {:ok, Course.new_from_json(response.body) }
-      {_, response } -> raise("rest_client: #{inspect rest_client} code: #{Atom.to_string(code)} response: #{inspect response}")
-    end
+    {code, response} = post_v2_course(rest_client, course, params)
     {code, response}
   end
 
