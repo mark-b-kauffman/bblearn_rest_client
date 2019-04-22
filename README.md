@@ -23,3 +23,14 @@ end
 Documentation can be generated with [ExDoc](https://github.com/elixir-lang/ex_doc)
 and published on [HexDocs](https://hexdocs.pm). Once published, the docs can
 be found at [https://hexdocs.pm/bblearn_rest_client](https://hexdocs.pm/bblearn_rest_client).
+
+Run tests from shell prompt after setting environment variables:
+export APP_KEY=61e08054-8a00-4790-bd49-07a07e7d82aa
+export APP_SECRET=N0n0fyourb1zCAD
+export LEARN_SERVER=502.hopto.org
+
+mix test
+OR 
+mix test --only create_enroll_destroy
+  
+
