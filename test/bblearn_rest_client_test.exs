@@ -119,5 +119,98 @@ defmodule BblearnRestClientTest do
     assert response.status_code == 404
   end
 
+  # Run with mix test --only create_enroll_destroy
+  @tag :create_enroll_destroy
+  test "create_enroll_destroy" do
+    IO.puts "test: create_enroll_destroy course users enrollments"
+    rc = RestClient.new(@learn_server, @app_key, @app_secret)
+    assert Map.has_key?(rc, :token) == true
+    rcauth = RestClient.authorize(rc)
+    assert rcauth.token["token_type"] == "bearer"
+    # NOTE: We had userName:mkauffman, but that doesn't work unless you have
+    # the REST APP configured with a user with the Learn Adamin System role.
+    {code, response} = Api.Users.get_user(rcauth, "userName:mkauffman")
+    # TODO: debug the phoenixdsk-user system role. It's not pulling the user.
+    assert code == :ok
+    assert response.status_code == 200
+    my_course = %Learn.Course{allowGuests: true, \
+    availability: %{"available" => "Yes", "duration" => %{"type" => "Continuous"}},\
+     courseId: "mbk-delete1", dataSourceId: "externalId:SYSTEM", \
+     enrollment: %{"type" => "InstructorLed"}, \
+     name: "Demo Course For Testing Purpose - mbk-delete1", ultraStatus: "Classic"}
+
+    my_user1 = %Learn.User{address: nil, availability: %{"available" => "Yes"}, userName: "mbk-delete-user1", password: "N0n10furb1z",
+     dataSourceId: "externalId:SYSTEM", gender: "male", name: %{"family" => "KauffmanDelete1", "given" => "Mark"},\
+     externalId: "mkauffmandelete1", institutionRoleIds:  ["FACULTY"], studentId: "mkauffmandelete1" }
+
+    my_user2 = %Learn.User{address: nil, availability: %{"available" => "Yes"}, userName: "mbk-delete-user2", password: "N0n10furb1z",
+     dataSourceId: "externalId:SYSTEM", gender: "male", name: %{"family" => "KauffmanDelete2", "given" => "Mark"},\
+     externalId: "mkauffmandelete2", institutionRoleIds:  ["FACULTY"], studentId: "mkauffmandelete2" }
+
+    my_user3 = %Learn.User{address: nil, availability: %{"available" => "Yes"}, userName: "mbk-delete-user3", password: "N0n10furb1z",
+     dataSourceId: "externalId:SYSTEM", gender: "male", name: %{"family" => "KauffmanDelete3", "given" => "Mark"},\
+     externalId: "mkauffmandelete3", institutionRoleIds:  ["FACULTY"], studentId: "mkauffmandelete3" }
+
+    {code, response} = Api.Courses.post_course(rcauth, my_course)
+    assert code == :ok
+    assert response.status_code == 201
+
+    {code, response} = Api.Users.post_user(rcauth, my_user1)
+    assert code == :ok
+    assert response.status_code == 201
+
+    {code, response} = Api.Users.post_user(rcauth, my_user2)
+    assert code == :ok
+    assert response.status_code == 201
+
+    {code, response} = Api.Users.post_user(rcauth, my_user3)
+    assert code == :ok
+    assert response.status_code == 201
+
+    {code, response} = Api.CoursesUsers.put_course_user(rcauth, "courseId:mbk-delete1", "userName:#{my_user1.userName}")
+    assert code == :ok
+    assert response.status_code == 201
+
+    {code, response} = Api.CoursesUsers.put_course_user(rcauth, "courseId:mbk-delete1", "userName:#{my_user2.userName}")
+    assert code == :ok
+    assert response.status_code == 201
+
+    {code, response} = Api.CoursesUsers.put_course_user(rcauth, "courseId:mbk-delete1", "userName:#{my_user3.userName}")
+    assert code == :ok
+    assert response.status_code == 201
+
+    {code, response} = Api.CoursesUsers.delete_course_user(rcauth, "courseId:mbk-delete1", "userName:#{my_user1.userName}")
+    assert code == :ok
+    assert response.status_code == 204
+
+    {code, response} = Api.CoursesUsers.delete_course_user(rcauth, "courseId:mbk-delete1", "userName:#{my_user2.userName}")
+    assert code == :ok
+    assert response.status_code == 204
+
+    {code, response} = Api.CoursesUsers.delete_course_user(rcauth, "courseId:mbk-delete1", "userName:#{my_user3.userName}")
+    assert code == :ok
+    assert response.status_code == 204
+
+    Api.Users.delete_user(rcauth, "userName:#{my_user1.userName}")
+    assert code == :ok
+    assert response.status_code == 204
+
+    Api.Users.delete_user(rcauth, "userName:#{my_user2.userName}")
+    assert code == :ok
+    assert response.status_code == 204
+
+    Api.Users.delete_user(rcauth, "userName:#{my_user3.userName}")
+    assert code == :ok
+    assert response.status_code == 204
+
+    Api.Courses.delete_course(rcauth, "courseId:#{my_course.courseId}")
+    assert code == :ok
+    assert response.status_code == 204
+
+    {code, response} = Api.Users.get_user(rcauth, "userName:nowhereman")
+    assert code == :ok
+    assert response.status_code == 404
+  end
+
 end
 
