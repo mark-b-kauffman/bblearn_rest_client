@@ -66,7 +66,7 @@ defmodule Learn.RestClient do
   @v1_oauth2_authorization_code "/learn/api/public/v1/oauth2/authorizationcode" # Since: 3200.7.0
 
   @enforce_keys [:fqdn, :key, :secret]
-  defstruct [:fqdn, :key, :secret, :token ]
+  defstruct [:fqdn, :key, :secret, :token, :auth_time ]
 
   @doc """
     new: Create a new RestClient
@@ -95,8 +95,8 @@ defmodule Learn.RestClient do
     %RestClient{fqdn: fqdn, key: key, secret: secret}
   end
 
-  def new(fqdn, key, secret, token) do
-    %RestClient{fqdn: fqdn, key: key, secret: secret, token: token}
+  def new(fqdn, key, secret, token, auth_time ) do
+    %RestClient{fqdn: fqdn, key: key, secret: secret, token: token, auth_time: auth_time}
   end
 
   def post_oauth2_token(rest_client, code, redirect_uri) do
@@ -111,8 +111,8 @@ defmodule Learn.RestClient do
     end
     IO.puts :stdio, "Calling HTTPoison.post"
 
-    {code, response} = HTTPoison.post url, body, headers, options
-    {code, response}
+    {status, response} = HTTPoison.post url, body, headers, options
+    {status, response}
   end
 
   @doc """
@@ -152,10 +152,10 @@ defmodule Learn.RestClient do
     # consists of a map that contains "access_token", "token_type", and "expires_in", then
     # we're good and we create & return a new RestClient that also contains the token.
 
-    {code, response} = post_oauth2_token(rest_client, code, redirect_uri)
+    {status, response} = post_oauth2_token(rest_client, code, redirect_uri)
 
     {:ok, token} =
-    case {code, response} do
+    case {status, response} do
         {:ok, response} ->  Poison.decode(response.body)
         {_, response } -> raise("rest_client: #{inspect rest_client} code: #{Atom.to_string(code)} response: #{inspect response}")
     end
@@ -164,14 +164,23 @@ defmodule Learn.RestClient do
       %{"access_token" => _, "token_type" => _, "expires_in" => _ } -> token
       _ -> raise("rest_client: #{inspect rest_client} token: #{inspect token}")
     end
+
+    auth_time = DateTime.utc_now()
     # With the return value we can do rest_client.token["access_token"], or .token["expires_in"]
-    RestClient.new(rest_client.fqdn, rest_client.key, rest_client.secret, token)
+    authorized_client = RestClient.new(rest_client.fqdn, rest_client.key, rest_client.secret, token, auth_time )
+    authorized_client
   end
 
   @doc """
     Convenience method to authorize using two-legged OAuth.
     We call authorize with a code of 0 to indicate two-legged.
     Of course there is no redirect_uri.
+
+        self.expires_in = self.auth['expires_in']
+        m, s = divmod(self.expires_in, 60)
+        self.now = datetime.datetime.now()
+        self.expires_at = self.now + datetime.timedelta(seconds=s, minutes=m)
+
   """
   def authorize(rest_client) do
     authorize(rest_client, 0, "")
@@ -186,8 +195,8 @@ defmodule Learn.RestClient do
     url = "https://#{rest_client.fqdn}#{url_path}?#{paramlist}"
     headers = [{"Content-Type",  "application/json"}, {"Authorization", "Bearer #{rest_client.token["access_token"]}"}]
     options = []
-    {code, response} = HTTPoison.get url, headers, options
-    {code, response}
+    {status, response} = HTTPoison.get url, headers, options
+    {status, response}
   end
 
   @doc """
@@ -201,8 +210,8 @@ defmodule Learn.RestClient do
     body = Poison.encode!(map_of_bodyvals)
     headers = [{"Content-Type",  "application/json"}, {"Authorization", "Bearer #{rest_client.token["access_token"]}"}]
     options = []
-    {code, response} = HTTPoison.post url, body, headers, options
-    {code, response}
+    {status, response} = HTTPoison.post url, body, headers, options
+    {status, response}
   end
 end
 

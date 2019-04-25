@@ -16,8 +16,8 @@ defmodule Learn.Api.Users do
     url = "https://#{rest_client.fqdn}#{@v1_users}/#{user_id}"
     headers = [{"Content-Type",  "application/json"}, {"Authorization", "Bearer #{rest_client.token["access_token"]}"}]
     options = []
-    {code, response} = HTTPoison.delete url, headers, options
-    {code, response}
+    {status, response} = HTTPoison.delete url, headers, options
+    {status, response}
   end
 
   ## Functions that call the v1_users endpoint
@@ -25,8 +25,8 @@ defmodule Learn.Api.Users do
     url = "https://#{rest_client.fqdn}#{@v1_users}/#{user_id}"
     headers = [{"Content-Type",  "application/json"}, {"Authorization", "Bearer #{rest_client.token["access_token"]}"}]
     options = []
-    {code, response} = HTTPoison.get url, headers, options
-    {code, response}
+    {status, response} = HTTPoison.get url, headers, options
+    {status, response}
   end
 
   @doc """
@@ -39,16 +39,16 @@ defmodule Learn.Api.Users do
     url = "https://#{rest_client.fqdn}#{@v1_users}?#{paramlist}"
     headers = [{"Content-Type",  "application/json"}, {"Authorization", "Bearer #{rest_client.token["access_token"]}"}]
     options = []
-    {code, response} = HTTPoison.get url, headers, options
-    {code, response}
+    {status, response} = HTTPoison.get url, headers, options
+    {status, response}
   end
 
   def get_users_courses(rest_client, user_id) do
     url = "https://#{rest_client.fqdn}#{@v1_users}/#{user_id}/courses"
     headers = [{"Content-Type",  "application/json"}, {"Authorization", "Bearer #{rest_client.token["access_token"]}"}]
     options = []
-    {code, response} = HTTPoison.get url, headers, options
-    {code, response}
+    {status, response} = HTTPoison.get url, headers, options
+    {status, response}
   end
 
   def post_v1_user(rest_client, user, params \\ %{}) do
@@ -58,14 +58,14 @@ defmodule Learn.Api.Users do
     url = "https://#{rest_client.fqdn}#{@v1_users}?#{paramlist}"
     headers = [{"Content-Type",  "application/json"}, {"Authorization", "Bearer #{rest_client.token["access_token"]}"}]
     options = []
-    {code, response} = HTTPoison.post url, body, headers, options
-    {code, response}
+    {status, response} = HTTPoison.post url, body, headers, options
+    {status, response}
   end
 
   def post_user(rest_client, user, params \\ %{}) do
     params = %{offset: 0} |> Map.merge(params)
-    {code, response} = post_v1_user(rest_client, user, params)
-    {code, response}
+    {status, response} = post_v1_user(rest_client, user, params)
+    {status, response}
   end
 
 end

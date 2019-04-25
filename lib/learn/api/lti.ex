@@ -3,11 +3,6 @@ defmodule Learn.Api.Lti do
   @moduledoc """
   Learn.Api.Lti
   """
-  alias Learn.Api.Lti
-  alias Learn.RestUtil
-
-  import HTTPoison
-  import Poison
 
   @v1_lti_placements "/learn/api/public/v1/lti/placements"                      # Since: 3300.0.0
 
@@ -20,8 +15,8 @@ defmodule Learn.Api.Lti do
     url = "https://#{rest_client.fqdn}#{@v1_lti_placements}?#{paramlist}"
     headers = [{"Content-Type",  "application/json"}, {"Authorization", "Bearer #{rest_client.token["access_token"]}"}]
     options = []
-    {code, response} = HTTPoison.get url, headers, options
-    {code, response}
+    {status, response} = HTTPoison.get url, headers, options
+    {status, response}
   end
 
 ## LTI convenience functions that call the current version

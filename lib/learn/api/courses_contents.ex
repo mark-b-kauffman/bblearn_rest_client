@@ -3,11 +3,6 @@ defmodule Learn.Api.CoursesContents do
   @moduledoc """
   Learn.Api.CoursesContents
   """
-  alias Learn.Api.CoursesContents
-  alias Learn.RestUtil
-
-  import HTTPoison
-  import Poison
 
   @v1_courses "/learn/api/public/v1/courses"                                    # Since: 3000.1.0
   @v2_courses "/learn/api/public/v2/courses"                                    # Since: 3400.8.0
@@ -22,7 +17,8 @@ defmodule Learn.Api.CoursesContents do
     url = "https://#{rest_client.fqdn}#{@v1_courses}/#{courseId}/contents?#{paramlist}"
     headers = [{"Content-Type",  "application/json"}, {"Authorization", "Bearer #{rest_client.token["access_token"]}"}]
     options = []
-    {code, response} = HTTPoison.get url, headers, options
+    {status, response} = HTTPoison.get url, headers, options
+    {status, response}
   end
 
   @doc """
@@ -41,7 +37,8 @@ defmodule Learn.Api.CoursesContents do
     url = "https://#{rest_client.fqdn}#{@v1_courses}/#{courseId}/contents/#{contentId}/children?#{paramlist}"
     headers = [{"Content-Type",  "application/json"}, {"Authorization", "Bearer #{rest_client.token["access_token"]}"}]
     options = []
-    {code, response} = HTTPoison.get url, headers, options
+    {status, response} = HTTPoison.get url, headers, options
+    {status, response}
   end
 
    @doc """
@@ -61,8 +58,8 @@ defmodule Learn.Api.CoursesContents do
     body = Poison.encode!(course_contents_body)
     headers = [{"Content-Type",  "application/json"}, {"Authorization", "Bearer #{rest_client.token["access_token"]}"}]
     options = []
-    {code, response} = HTTPoison.post url, body, headers, options
-    {code, response}
+    {status, response} = HTTPoison.post url, body, headers, options
+    {status, response}
   end
 
 end

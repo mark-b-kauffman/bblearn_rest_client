@@ -65,7 +65,7 @@ defmodule Learn.User do
   }
   Create a new User from the JSON that comes back from GET /courses/user_id
 
-  iex> {code, response} = RestClient.get_user(rcauth, "userName:mkauffman")
+  iex> {status, response} = RestClient.get_user(rcauth, "userName:mkauffman")
   iex(12)> user_resp.body
   "{\"id\":\"_5_1\",\"uuid\":\"00d1ad66e50e45238e1efda0400f6ec1\",\"externalId\":\"mkauffman\",\"dataSourceId\":\"_2_1\",\"userName\":\"mkauffman\",\"studentId\":\"mkauffman\",\"educationLevel\":\"Unknown\",\"gender\":\"Unknown\",\"created\":\"2019-03-28T19:33:55.549Z\",\"lastLogin\":\"2019-04-14T03:21:57.338Z\",\"institutionRoleIds\":[\"STUDENT\"],\"systemRoleIds\":[\"SystemAdmin\"],\"availability\":{\"available\":\"Yes\"},\"name\":{\"given\":\"Mark\",\"family\":\"Kauffman\"},\"contact\":{\"email\":\"mark.kauffman@blackboard.com\"}}"
   iex(13)> my_user = User.new_from_json(user_resp.body)
@@ -113,7 +113,7 @@ defmodule Learn.User do
     uuid: nil
   }
 
-  iex(15)> {code, response} = Api.Users.post_v1_user(rcauth, my_user_new)
+  iex(15)> {status, response} = Api.Users.post_v1_user(rcauth, my_user_new)
     {:ok,
     %HTTPoison.Response{
       body: "{\"id\":\"_6_1\",\"uuid\":\"4c59b447c2704141b592d37ccf824ee0\",\"externalId\":\"mkauffmannew1\",\"dataSourceId\":\"_2_1\",\"userName\":\"mkauffman-new1\",\"studentId\":\"mkauffman\",\"educationLevel\":\"Unknown\",\"gender\":\"Male\",\"created\":\"2019-04-17T23:58:04.285Z\",\"institutionRoleIds\":[\"FACULTY\"],\"systemRoleIds\":[\"User\"],\"availability\":{\"available\":\"Yes\"},\"name\":{\"given\":\"Mark\",\"family\":\"KauffmanNew1\"}}",

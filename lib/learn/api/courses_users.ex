@@ -2,7 +2,7 @@ defmodule Learn.Api.CoursesUsers do
   require IEx
   @moduledoc """
   Learn.Api.CoursesUsers
-  iex(25)> {code, response} =
+  iex(25)> {status, response} =
     Api.CoursesUsers.get_course_user(rcauth, "courseId:mbk-original", "userName:mkauffman-new1", %{expand: "user"})
 
   iex(26)> my_cu_json = Learn.CourseUser.new_from_json(response.body)
@@ -44,13 +44,13 @@ defmodule Learn.Api.CoursesUsers do
     url = "https://#{rest_client.fqdn}#{@v1_courses}/#{courseId}/users/#{userId}?#{paramlist}"
     headers = [{"Content-Type",  "application/json"}, {"Authorization", "Bearer #{rest_client.token["access_token"]}"}]
     options = []
-    {code, response} = HTTPoison.delete url, headers, options
-    {code, response}
+    {status, response} = HTTPoison.delete url, headers, options
+    {status, response}
   end
 
   def delete_course_user(rest_client, courseId, userId, params \\ %{}) do
-    {code, response} = delete_v1_course_user(rest_client, courseId, userId, params)
-    {code, response}
+    {status, response} = delete_v1_course_user(rest_client, courseId, userId, params)
+    {status, response}
   end
 
   @doc """
@@ -64,15 +64,15 @@ defmodule Learn.Api.CoursesUsers do
     url = "https://#{rest_client.fqdn}#{@v1_courses}/#{courseId}/users?#{paramlist}"
     headers = [{"Content-Type",  "application/json"}, {"Authorization", "Bearer #{rest_client.token["access_token"]}"}]
     options = []
-    {code, response} = HTTPoison.get url, headers, options
-    {code, response}
+    {status, response} = HTTPoison.get url, headers, options
+    {status, response}
   end
 
   ## course memberships convenience methods to call the lastest version
   def get_course_users(rest_client, courseId, params \\ %{}) do
     params = %{offset: 0} |> Map.merge(params)
-    {code, response} = get_v1_course_users(rest_client, courseId, params)
-    {code, response}
+    {status, response} = get_v1_course_users(rest_client, courseId, params)
+    {status, response}
   end
 
   def get_v1_course_user(rest_client, courseId, userId, params \\ %{}) do
@@ -81,14 +81,14 @@ defmodule Learn.Api.CoursesUsers do
     url = "https://#{rest_client.fqdn}#{@v1_courses}/#{courseId}/users/#{userId}?#{paramlist}"
     headers = [{"Content-Type",  "application/json"}, {"Authorization", "Bearer #{rest_client.token["access_token"]}"}]
     options = []
-    {code, response} = HTTPoison.get url, headers, options
-    {code, response}
+    {status, response} = HTTPoison.get url, headers, options
+    {status, response}
   end
 
   def get_course_user(rest_client, courseId, userId, params \\ %{}) do
     params = %{offset: 0} |> Map.merge(params)
-    {code, response} = get_v1_course_user(rest_client, courseId, userId, params)
-    {code, response}
+    {status, response} = get_v1_course_user(rest_client, courseId, userId, params)
+    {status, response}
   end
 
 
@@ -99,13 +99,13 @@ defmodule Learn.Api.CoursesUsers do
     url = "https://#{rest_client.fqdn}#{@v1_courses}/#{course_id}/users/#{user_id}?#{paramlist}"
     headers = [{"Content-Type",  "application/json"}, {"Authorization", "Bearer #{rest_client.token["access_token"]}"}]
     options = []
-    {code, response} = HTTPoison.put url, body, headers, options
-    {code, response}
+    {status, response} = HTTPoison.put url, body, headers, options
+    {status, response}
   end
 
   def put_course_user(rest_client, course_id, user_id, child_course \\ %{}, params \\ %{} ) do
-    {code, response} = put_v2_course_user(rest_client, course_id, user_id, child_course, params)
-    {code, response}
+    {status, response} = put_v2_course_user(rest_client, course_id, user_id, child_course, params)
+    {status, response}
   end
 
 

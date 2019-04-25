@@ -4,11 +4,6 @@ defmodule Learn.Api.Announcements do
   Learn.Api.Announcements
 
   """
-  alias Learn.Api.Announcements
-  alias Learn.RestUtil
-
-  import HTTPoison
-  import Poison
 
   @v1_announcements "/learn/api/public/v1/announcements"                        # Since: 3100.7.0
 
@@ -20,8 +15,8 @@ defmodule Learn.Api.Announcements do
     url = "https://#{rest_client.fqdn}#{@v1_announcements}?#{paramlist}"
     headers = [{"Content-Type",  "application/json"}, {"Authorization", "Bearer #{rest_client.token["access_token"]}"}]
     options = []
-    {code, response} = HTTPoison.get url, headers, options
-    {code, response}  # necessary for documenting the return objects w/o a warning on the prior line.
+    {status, response} = HTTPoison.get url, headers, options
+    {status, response}  # necessary for documenting the return objects w/o a warning on the prior line.
   end
 
 end

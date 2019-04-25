@@ -3,11 +3,6 @@ defmodule Learn.Api.Datasources do
   @moduledoc """
   Learn.Api.Datasources
   """
-  alias Learn.Api.Datasources
-  alias Learn.RestUtil
-
-  import HTTPoison
-  import Poison
 
   @v1_dataSources "/learn/api/public/v1/dataSources"                            # Since: 3000.1.0
 
@@ -20,8 +15,8 @@ defmodule Learn.Api.Datasources do
     url = "https://#{rest_client.fqdn}#{@v1_dataSources}?#{paramlist}"
     headers = [{"Content-Type",  "application/json"}, {"Authorization", "Bearer #{rest_client.token["access_token"]}"}]
     options = []
-    {code, response} = HTTPoison.get url, headers, options
-    {code, response}
+    {status, response} = HTTPoison.get url, headers, options
+    {status, response}
   end
 
 end

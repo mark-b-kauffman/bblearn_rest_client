@@ -3,11 +3,7 @@ defmodule Learn.Api.System do
   @moduledoc """
   Learn.Api.System
   """
-  alias Learn.Api.System
-  alias Learn.RestUtil
 
-  import HTTPoison
-  import Poison
 
   @v1_system_version  "/learn/api/public/v1/system/version"                     # Since: 3000.3.0
 
@@ -21,8 +17,8 @@ defmodule Learn.Api.System do
   def get_system_version(rest_client) do
     # GET /learn/api/public/v1/system/version
     url = "https://#{rest_client.fqdn}#{@v1_system_version}"
-    {code, response} = HTTPoison.get url
-    {code, response}
+    {status, response} = HTTPoison.get url
+    {status, response}
   end
 
 
