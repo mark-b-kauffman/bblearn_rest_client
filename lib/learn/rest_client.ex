@@ -99,9 +99,9 @@ defmodule Learn.RestClient do
     %RestClient{fqdn: fqdn, key: key, secret: secret, token: token, auth_time: auth_time}
   end
 
-  def post_oauth2_token(rest_client, code, redirect_uri) do
+  def post_oauth2_token(rest_client, code, redirect_uri, hackney_options \\ [] ) do
     headers = [{"Content-Type",  "application/x-www-form-urlencoded"}]
-    options = [hackney: [basic_auth: {"#{rest_client.key}", "#{rest_client.secret}"}] ]
+    options = [hackney: hackney_options ++ [basic_auth: {"#{rest_client.key}", "#{rest_client.secret}"}] ]
 
     {url, body} = case code do
       0 ->
@@ -143,7 +143,7 @@ defmodule Learn.RestClient do
 
   """
 
-  def authorize(rest_client, code, redirect_uri) do
+  def authorize(rest_client, code, redirect_uri, hackney_options \\ [] ) do
     # If you're new to Elixir, like I am, the following looks 'interesting'.
     # Demystified: The case statement takes the results of the post_ and pattern matches them
     # into a code and a response. The code can be :ok, or something else. If it's :ok then
@@ -152,7 +152,8 @@ defmodule Learn.RestClient do
     # consists of a map that contains "access_token", "token_type", and "expires_in", then
     # we're good and we create & return a new RestClient that also contains the token.
 
-    {status, response} = post_oauth2_token(rest_client, code, redirect_uri)
+    # 2019.04.27 Added hackney_options so we can pass in hackney: [:insecure]
+    {status, response} = post_oauth2_token(rest_client, code, redirect_uri, hackney_options)
 
     {:ok, token} =
     case {status, response} do
@@ -182,8 +183,8 @@ defmodule Learn.RestClient do
         self.expires_at = self.now + datetime.timedelta(seconds=s, minutes=m)
 
   """
-  def authorize(rest_client) do
-    authorize(rest_client, 0, "")
+  def authorize(rest_client, hackney_options \\ []) do
+    authorize(rest_client, 0, "", hackney_options)
   end
 
   @doc """
