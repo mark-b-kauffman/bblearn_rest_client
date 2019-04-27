@@ -157,7 +157,7 @@ defmodule Learn.RestClient do
     {:ok, token} =
     case {status, response} do
         {:ok, response} ->  Poison.decode(response.body)
-        {_, response } -> raise("rest_client: #{inspect rest_client} code: #{Atom.to_string(code)} response: #{inspect response}")
+        {_, response } -> raise("rest_client: #{inspect rest_client} status: #{Atom.to_string(status)} response: #{inspect response}")
     end
 
     case token do
