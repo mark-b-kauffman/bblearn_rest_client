@@ -5,9 +5,9 @@ defmodule Learn.Api.CoursesContents do
   """
 
   @v1_courses "/learn/api/public/v1/courses"                                    # Since: 3000.1.0
-  @v2_courses "/learn/api/public/v2/courses"                                    # Since: 3400.8.0
+##  @v2_courses "/learn/api/public/v2/courses"                                    # Since: 3400.8.0
 
-   ## COURSES CONTENTS
+   ## COURSES CONTENTS as of 2019.05.24 contents endpoint is all v1.
   @doc """
     Call the v1_courses endpoint to get it's top-level content items.
   """
