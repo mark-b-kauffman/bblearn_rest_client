@@ -110,8 +110,16 @@ defmodule Learn.RestClient do
     {status, response}
   end
 
-  def is_token_stale?(_rest_client) do
-    true
+  @doc """
+    Test: Is rcauth.token.expire_time + rcauth.auth_time >= time.now
+    Precondition: rcauth must be a RestClient for which we previously got a token.
+  """
+  def is_token_stale?(rcauth) do
+    expires_at = DateTime.add(rcauth.auth_time, rcauth.token["expires_in"])
+    time_diff = DateTime.diff(expires_at, DateTime.utc_now())
+    IO.puts(time_diff)
+    (time_diff < 2)
+
   end
 
   @doc """
