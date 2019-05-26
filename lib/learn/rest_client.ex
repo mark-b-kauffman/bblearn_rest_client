@@ -110,6 +110,10 @@ defmodule Learn.RestClient do
     {status, response}
   end
 
+  def is_token_stale?(_rest_client) do
+    true
+  end
+
   @doc """
     Convenience method to get and save the authorization. Returns a RestClient
     with the token. If we call this with code other than 0, we're doing 3LO.
@@ -148,22 +152,26 @@ defmodule Learn.RestClient do
     # we're good and we create & return a new RestClient that also contains the token.
 
     # 2019.04.27 Added hackney_options so we can pass in hackney: [:insecure]
-    {status, response} = post_oauth2_token(rest_client, code, redirect_uri, hackney_options)
 
-    {:ok, token} =
-    case {status, response} do
-        {:ok, response} ->  Poison.decode(response.body)
-        {_, response } -> raise("rest_client: #{inspect rest_client} status: #{Atom.to_string(status)} response: #{inspect response}")
+    authorized_client = if (is_nil(rest_client.token) or is_token_stale?(rest_client)) do
+      auth_time = DateTime.utc_now() #set to the time just before we do the post. makes time of expiry calculated as before actual exp.
+      {status, response} = post_oauth2_token(rest_client, code, redirect_uri, hackney_options)
+
+      {:ok, token} =
+      case {status, response} do
+          {:ok, response} ->  Poison.decode(response.body)
+          {_, response } -> raise("rest_client: #{inspect rest_client} status: #{Atom.to_string(status)} response: #{inspect response}")
+      end
+
+      case token do
+        %{"access_token" => _, "token_type" => _, "expires_in" => _ } -> token
+        _ -> raise("rest_client: #{inspect rest_client} token: #{inspect token}")
+      end
+      # With the return value we can do rest_client.token["access_token"], or .token["expires_in"]
+      RestClient.new(rest_client.fqdn, rest_client.key, rest_client.secret, token, auth_time )
+    else
+      rest_client # Just return what came in. No need to make a call to the token endpoint.
     end
-
-    case token do
-      %{"access_token" => _, "token_type" => _, "expires_in" => _ } -> token
-      _ -> raise("rest_client: #{inspect rest_client} token: #{inspect token}")
-    end
-
-    auth_time = DateTime.utc_now()
-    # With the return value we can do rest_client.token["access_token"], or .token["expires_in"]
-    authorized_client = RestClient.new(rest_client.fqdn, rest_client.key, rest_client.secret, token, auth_time )
     authorized_client
   end
 
