@@ -54,12 +54,7 @@ defmodule Learn.RestClient do
      }}
 
   """
-
   alias Learn.{RestClient}
-
-
-
-
 
   # oauth
   @v1_oauth2_token "/learn/api/public/v1/oauth2/token"                          # Since: 2015.11.0
