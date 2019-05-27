@@ -111,15 +111,16 @@ defmodule Learn.RestClient do
   end
 
   @doc """
-    Test: Is rcauth.token.expire_time + rcauth.auth_time >= time.now
+    Test: Is the difference between the expires_at time and now less than 2 seconds?
+    If so, we call the token stale which results in a call to the token endpoint to get a new one.
     Precondition: rcauth must be a RestClient for which we previously got a token.
   """
   def is_token_stale?(rcauth) do
     expires_at = DateTime.add(rcauth.auth_time, rcauth.token["expires_in"])
     time_diff = DateTime.diff(expires_at, DateTime.utc_now())
-    IO.puts(time_diff)
+    # IO.puts("is_token_stale? time_diff")
+    # IO.puts(time_diff)
     (time_diff < 2)
-
   end
 
   @doc """

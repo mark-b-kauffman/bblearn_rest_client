@@ -4,8 +4,10 @@ defmodule BblearnRestClientTest do
   alias Learn.RestClient
   alias Learn.Api
   doctest BblearnRestClient
+
   # See config.exs app_key and app_secret are environment APP_KEY & APP_SECRET
   # Now we have a way to get access and test! Also need LEARN_SERVER
+  # Run a single test with: mix test --only <test name>
   @app_key Application.get_env(:bblearn_rest_client, :oauth)[:app_key]
   @app_secret Application.get_env(:bblearn_rest_client, :oauth)[:app_secret]
   @learn_server Application.get_env(:bblearn_rest_client, :oauth)[:learn_server]
@@ -14,11 +16,14 @@ defmodule BblearnRestClientTest do
     IO.puts "If you run into errors be certain to have set these environment variables: APP_KEY, APP_SECRET, and LEARN_SERVER."
   end
 
+  @tag :greet
   test "greets the world" do
     IO.puts "test: greets the world"
     assert BblearnRestClient.hello() == "Use lib/learn/rest_client."
   end
 
+  @tag :authorize
+  @tag timeout: 100000
   test "authorize" do
     IO.puts "test: authorize"
     rc = RestClient.new(@learn_server, @app_key, @app_secret)
@@ -27,6 +32,32 @@ defmodule BblearnRestClientTest do
     assert Map.has_key?(rc, :secret) == true
     assert Map.has_key?(rc, :token) == true
     rcauth = RestClient.authorize(rc)
+    IO.puts "-rcauth.token-"
+    IO.inspect(rcauth.token)
+    :timer.sleep(10000)
+    rcauth2 = RestClient.authorize(rcauth)
+    IO.puts "--rcauth2.token--"
+    IO.inspect(rcauth2.token)
+    :timer.sleep(10000)
+    rcauth3 = RestClient.authorize(rcauth)
+    IO.puts "--rcauth3.token--"
+    IO.inspect(rcauth3.token)
+    :timer.sleep(10000)
+    rcauth4 = RestClient.authorize(rcauth)
+    IO.puts "--rcauth4.token--"
+    IO.inspect(rcauth4.token)
+    :timer.sleep(10000)
+    rcauth5 = RestClient.authorize(rcauth)
+    IO.puts "--rcauth5.token--"
+    IO.inspect(rcauth5.token)
+    :timer.sleep(10000)
+    rcauth6 = RestClient.authorize(rcauth)
+    IO.puts "--rcauth6.token--"
+    IO.inspect(rcauth6.token)
+    :timer.sleep(10000)
+    rcauth7 = RestClient.authorize(rcauth)
+    IO.puts "--rcauth7.token--"
+    IO.inspect(rcauth7.token)
     assert rcauth.token["token_type"] == "bearer"
   end
 
