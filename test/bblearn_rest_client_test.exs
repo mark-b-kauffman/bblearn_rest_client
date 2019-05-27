@@ -22,6 +22,8 @@ defmodule BblearnRestClientTest do
     assert BblearnRestClient.hello() == "Use lib/learn/rest_client."
   end
 
+  # Bash command to repeatedly authorize and watch the POST to the endpoint show up when the token is stale:
+  # for i in {1..600}; do date | tee -a authtestlog.txt; mix test --only authorize | tee -a authtestlog.txt; sleep 1; done
   @tag :authorize
   @tag timeout: 100000
   test "authorize" do
