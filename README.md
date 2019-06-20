@@ -5,10 +5,12 @@ package specific to Blackboard Learn.
 BbLearnRestClient is an Elixir Hex Package, making it easy to add
 Learn REST API calls to your Elixir Application. This first draft is a
 first step toward an Blackboard Learn REST SDK for Elixir. The first draft
-depends on HTTPoison to make calls to a Learn server, and Poison to 
+depends on HTTPoison to make calls to a Learn server, and Poison for JSON
+encoding/decoding. 
 
 ## Use directly from the interactive Elixir Shell:
-```After cloning...
+```
+After cloning...
 cd bblearn_rest_client
 mix deps get
 iex -S mix
