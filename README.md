@@ -8,7 +8,7 @@ first step toward an Blackboard Learn REST SDK for Elixir. The first draft
 depends on HTTPoison to make calls to a Learn server, and Poison to 
 
 ## Use directly from the interactive Elixir Shell:
-After cloning...
+```After cloning...
 cd bblearn_rest_client
 mix deps get
 iex -S mix
@@ -17,6 +17,7 @@ alias Learn.Api
 rc = RestClient.new("bd-partner-a-original.blackboard.com", "your_app_key_here", "your_app_secret_here")
 rcauth = RestClient.authorize(rc)
 {status, response} = Api.Users.get_user("userName:mkauffman") # Gets the User object for the user mkauffman
+```
 
 
 ## Installation
