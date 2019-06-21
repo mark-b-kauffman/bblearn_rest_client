@@ -36,27 +36,27 @@ defmodule BblearnRestClientTest do
     rcauth = RestClient.authorize(rc)
     IO.puts "-rcauth.token-"
     IO.inspect(rcauth.token)
-    :timer.sleep(10000)
+    :timer.sleep(1000)
     rcauth2 = RestClient.authorize(rcauth)
     IO.puts "--rcauth2.token--"
     IO.inspect(rcauth2.token)
-    :timer.sleep(10000)
+    :timer.sleep(1000)
     rcauth3 = RestClient.authorize(rcauth)
     IO.puts "--rcauth3.token--"
     IO.inspect(rcauth3.token)
-    :timer.sleep(10000)
+    :timer.sleep(1000)
     rcauth4 = RestClient.authorize(rcauth)
     IO.puts "--rcauth4.token--"
     IO.inspect(rcauth4.token)
-    :timer.sleep(10000)
+    :timer.sleep(1000)
     rcauth5 = RestClient.authorize(rcauth)
     IO.puts "--rcauth5.token--"
     IO.inspect(rcauth5.token)
-    :timer.sleep(10000)
+    :timer.sleep(1000)
     rcauth6 = RestClient.authorize(rcauth)
     IO.puts "--rcauth6.token--"
     IO.inspect(rcauth6.token)
-    :timer.sleep(10000)
+    :timer.sleep(1000)
     rcauth7 = RestClient.authorize(rcauth)
     IO.puts "--rcauth7.token--"
     IO.inspect(rcauth7.token)
