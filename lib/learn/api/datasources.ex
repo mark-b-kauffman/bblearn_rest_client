@@ -42,4 +42,15 @@ defmodule Learn.Api.Datasources do
     {status, response}
   end
 
+  def post_datasource(rest_client, datasource, params \\ %{}) do
+    params = %{offset: 0} |> Map.merge(params)
+    paramlist = URI.encode_query(params) # Turn the map into a parameter list string in one fell swoop.
+    body = Poison.encode!(datasource)
+    url = "https://#{rest_client.fqdn}#{@v1_dataSources}?#{paramlist}"
+    headers = [{"Content-Type",  "application/json"}, {"Authorization", "Bearer #{rest_client.token["access_token"]}"}]
+    options = []
+    {code, response} = HTTPoison.post url, body, headers, options
+    {code, response}
+  end
+
 end

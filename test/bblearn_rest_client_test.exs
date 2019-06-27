@@ -112,13 +112,13 @@ defmodule BblearnRestClientTest do
     assert response.status_code == 200
   end
 
-  test "get_dataSources" do
-    IO.puts "test: get_dataSources"
+  test "get_datasources" do
+    IO.puts "test: get_datasources"
     rc = RestClient.new(@learn_server, @app_key, @app_secret)
     assert Map.has_key?(rc, :token) == true
     rcauth = RestClient.authorize(rc)
     assert rcauth.token["token_type"] == "bearer"
-    {code, response} = Api.Datasources.get_dataSources(rcauth)
+    {code, response} = Api.Datasources.get_datasources(rcauth)
     assert code == :ok
     assert response.status_code == 200
   end
