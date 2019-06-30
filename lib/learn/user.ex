@@ -95,7 +95,7 @@ defmodule Learn.User do
 
   The following creates a new user from the current user with the necessary fields set nil.
   Takes an existing map, user, modifies certain fields to create a new map, buser.
-  iex(23)> buser = %{user | created: nil, modified: nil, uuid: nil, contact: %{"email" => "blurry@smoemail.com"}, externalId: "blurry", id: nil, lastLogin: nil, name: %{"family" => "Lurry", "given" => "Bob"}, studentId: "blurry", userName: "blurry", password: "xyzzy!"}
+  iex(23)> buser = %{user | created: nil, modified: nil, uuid: nil, contact: %{"email" => "blurry@smoemail.com"}, externalId: "blurry", id: nil, lastLogin: nil, name: %{"family" => "Lurry", "given" => "Brenda"}, studentId: "blurry", userName: "blurry", password: "xyzzy!"}
 
   The following createsa a new user from scratch.
   iex(14)> my_user_new = %Learn.User{address: nil, availability: %{"available" => "Yes"}, userName: "mkauffman-new1", password: "N0n10furb1z",
