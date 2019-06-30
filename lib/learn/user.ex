@@ -1,7 +1,7 @@
 defmodule Learn.User do
 
   # Struct for a v1 User
-  defstruct [:id, :uuid, :externalId, :dataSourceId, :userName,
+  defstruct [:id, :uuid, :externalId, :dataSourceId, :userName, :created, :modified, :lastLogin,
    :studentId, :password, :educationLevel, :gender, :birthDate, :institutionRoleIds,
   :systemRoleIds, :availability, :name, :job, :contact, :address, :locale]
 
@@ -65,30 +65,39 @@ defmodule Learn.User do
   }
   Create a new User from the JSON that comes back from GET /courses/user_id
 
-  iex> {status, response} = RestClient.get_user(rcauth, "userName:mkauffman")
-  iex(12)> user_resp.body
-  "{\"id\":\"_5_1\",\"uuid\":\"00d1ad66e50e45238e1efda0400f6ec1\",\"externalId\":\"mkauffman\",\"dataSourceId\":\"_2_1\",\"userName\":\"mkauffman\",\"studentId\":\"mkauffman\",\"educationLevel\":\"Unknown\",\"gender\":\"Unknown\",\"created\":\"2019-03-28T19:33:55.549Z\",\"lastLogin\":\"2019-04-14T03:21:57.338Z\",\"institutionRoleIds\":[\"STUDENT\"],\"systemRoleIds\":[\"SystemAdmin\"],\"availability\":{\"available\":\"Yes\"},\"name\":{\"given\":\"Mark\",\"family\":\"Kauffman\"},\"contact\":{\"email\":\"mark.kauffman@blackboard.com\"}}"
-  iex(13)> my_user = User.new_from_json(user_resp.body)
+  iex(19)> {status, response} = Api.Users.get_user(rcauth, "userName:shurrey")
+  iex(21)> response.body
+  "{\"id\":\"_9_1\",\"uuid\":\"a8b3c196ea5647d9a83c1552a882be29\",\"externalId\":\"shurrey\",\"dataSourceId\":\"_2_1\",\"userName\":\"shurrey\",\"studentId\":\"shurrey\",\"educationLevel\":\"Unknown\",\"gender\":\"Unknown\",\"created\":\"2019-06-20T20:34:00.230Z\",\"modified\":\"2019-06-23T23:22:04.936Z\",\"lastLogin\":\"2019-06-23T23:22:04.935Z\",\"institutionRoleIds\":[\"STUDENT\"],\"systemRoleIds\":[\"User\"],\"availability\":{\"available\":\"Yes\"},\"name\":{\"given\":\"Scott\",\"family\":\"Hurrey\"},\"contact\":{\"email\":\"shurrey@smoemail.com\"}}"
+    iex(22)> user = Learn.User.new_from_json(response.body)
   %Learn.User{
     address: nil,
     availability: %{"available" => "Yes"},
     birthDate: nil,
-    contact: %{"email" => "mark.kauffman@blackboard.com"},
+    contact: %{"email" => "shurrey@smoemail.com"},
+    created: "2019-06-20T20:34:00.230Z",
     dataSourceId: "_2_1",
     educationLevel: "Unknown",
-    externalId: "mkauffman",
+    externalId: "shurrey",
     gender: "Unknown",
-    id: "_5_1",
+    id: "_9_1",
     institutionRoleIds: ["STUDENT"],
     job: nil,
+    lastLogin: "2019-06-23T23:22:04.935Z",
     locale: nil,
-    name: %{"family" => "Kauffman", "given" => "Mark"},
-    studentId: "mkauffman",
-    systemRoleIds: ["SystemAdmin"],
-    userName: "mkauffman",
-    uuid: "00d1ad66e50e45238e1efda0400f6ec1"
+    modified: "2019-06-23T23:22:04.936Z",
+    name: %{"family" => "Hurrey", "given" => "Scott"},
+    password: nil,
+    studentId: "shurrey",
+    systemRoleIds: ["User"],
+    userName: "shurrey",
+    uuid: "a8b3c196ea5647d9a83c1552a882be29"
   }
 
+  The following creates a new user from the current user with the necessary fields set nil.
+  Takes an existing map, user, modifies certain fields to create a new map, buser.
+  iex(23)> buser = %{user | created: nil, modified: nil, uuid: nil, contact: %{"email" => "blurry@smoemail.com"}, externalId: "blurry", id: nil, lastLogin: nil, name: %{"family" => "Lurry", "given" => "Bob"}, studentId: "blurry", userName: "blurry", password: "xyzzy!"}
+
+  The following createsa a new user from scratch.
   iex(14)> my_user_new = %Learn.User{address: nil, availability: %{"available" => "Yes"}, userName: "mkauffman-new1", password: "N0n10furb1z",
   ...(14)> dataSourceId: "externalId:SYSTEM", gender: "male", name: %{"family" => "KauffmanNew1", "given" => "Mark"},\
   ...(14)> externalId: "mkauffmannew1", institutionRoleIds:  ["FACULTY"], studentId: "mkauffman" }
