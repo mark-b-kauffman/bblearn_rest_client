@@ -22,4 +22,51 @@ iex(10)> Poison.decode response.body
    }
  }}
 
- 
+
+
+ iex(2)> rc = RestClient.new("mbk3700-3-0.zapto.org", "e3514cc6-8822-4401-88e3-0d37a323bdd1", "bAw45QmkEOcY36UsC3N6tudnJThwwweP")
+%Learn.RestClient{
+  auth_time: nil,
+  fqdn: "mbk3700-3-0.zapto.org",
+  key: "e3514cc6-8822-4401-88e3-0d37a323bdd1",
+  secret: "bAw45QmkEOcY36UsC3N6tudnJThwwweP",
+  token: nil
+}
+
+iex(3)> rcauth = RestClient.authorize(rc)
+Calling HTTPoison.post
+%Learn.RestClient{
+  auth_time: #DateTime<2019-06-30 20:15:37.057852Z>,
+  fqdn: "mbk3700-3-0.zapto.org",
+  key: "e3514cc6-8822-4401-88e3-0d37a323bdd1",
+  secret: "bAw45QmkEOcY36UsC3N6tudnJThwwweP",
+  token: %{
+    "access_token" => "tI2LEGKslocEWFzBs44ociLmwc46m5bD",
+    "expires_in" => 3067,
+    "token_type" => "bearer"
+  }
+}
+
+iex(5)> {status, response} = Api.Datasources.get_datasource(rcauth, "_2_1")
+
+iex(6)> oldds = Learn.DataSource.new_from_json(response.body)
+%Learn.DataSource{
+  description: "System data source used for associating records that are created via web browser.",
+  externalId: "SYSTEM",
+  id: "_2_1"
+}
+iex(7)> newds = %{oldds | description: "my new one", externalId: "MNO", id: nil}
+%Learn.DataSource{description: "my new one", externalId: "MNO", id: nil}
+iex(8)> {status, response} = Api.Datasources.post_datasource(rcauth, newds)
+
+{:ok,
+ %HTTPoison.Response{
+   body: "{\"id\":\"_5_1\",\"externalId\":\"MNO\",\"description\":\"my new one\"}",
+   ...
+     {"X-Rate-Limit-Reset", "27813"},
+     {"Location", "/learn/api/public/v1/dataSources/_5_1"},
+     {"X-Blackboard-Context-Version", "3700.3.0-rel.7+29b16e7"}
+   ],
+   request_url: "https://mbk3700-3-0.zapto.org/learn/api/public/v1/dataSources?offset=0",
+   status_code: 201
+ }}s
