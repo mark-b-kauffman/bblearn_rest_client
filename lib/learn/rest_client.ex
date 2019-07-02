@@ -214,6 +214,22 @@ defmodule Learn.RestClient do
   end
 
   @doc """
+        Method to PATCH to any /learn enpoint.
+        map_of_bodyvals example: x = %{"courseId" => "mbK_514_1"}
+        Cam pass in options=[hackney: [:insecure]]
+  """
+  def patch_endpoint(rest_client, url_path, map_of_bodyvals, params \\ %{}, options \\ [] ) do
+    params = %{offset: 0} |> Map.merge(params)
+    paramlist = URI.encode_query(params) # Turn the map into a parameter list string in one fell swoop.
+    url = "https://#{rest_client.fqdn}#{url_path}?#{paramlist}"
+    body = Poison.encode!(map_of_bodyvals)
+    headers = [{"Content-Type",  "application/json"}, {"Authorization", "Bearer #{rest_client.token["access_token"]}"}]
+
+    {status, response} = HTTPoison.patch url, body, headers, options
+    {status, response}
+  end
+
+  @doc """
         Method to POST to any /learn enpoint.
         map_of_bodyvals example: x = %{"courseId" => "mbK_514_1"}
         2019.06.26 now can pass in options=[hackney: [:insecure]]
@@ -228,6 +244,23 @@ defmodule Learn.RestClient do
     {status, response} = HTTPoison.post url, body, headers, options
     {status, response}
   end
+
+  @doc """
+        Method to PUT to any /learn enpoint.
+        map_of_bodyvals example: x = %{"courseId" => "mbK_514_1"}
+        Can pass in options=[hackney: [:insecure]]
+  """
+  def put_endpoint(rest_client, url_path, map_of_bodyvals, params \\ %{}, options \\ [] ) do
+    params = %{offset: 0} |> Map.merge(params)
+    paramlist = URI.encode_query(params) # Turn the map into a parameter list string in one fell swoop.
+    url = "https://#{rest_client.fqdn}#{url_path}?#{paramlist}"
+    body = Poison.encode!(map_of_bodyvals)
+    headers = [{"Content-Type",  "application/json"}, {"Authorization", "Bearer #{rest_client.token["access_token"]}"}]
+
+    {status, response} = HTTPoison.put url, body, headers, options
+    {status, response}
+  end
+
 end
 
 
