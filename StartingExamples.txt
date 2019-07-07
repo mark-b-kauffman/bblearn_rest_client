@@ -49,14 +49,14 @@ Calling HTTPoison.post
 
 iex(5)> {status, response} = Api.Datasources.get_datasource(rcauth, "_2_1")
 
-iex(6)> oldds = Learn.DataSource.new_from_json(response.body)
-%Learn.DataSource{
+iex(6)> oldds = Learn.Datasource.new_from_json(response.body)
+%Learn.Datasource{
   description: "System data source used for associating records that are created via web browser.",
   externalId: "SYSTEM",
   id: "_2_1"
 }
 iex(7)> newds = %{oldds | description: "my new one", externalId: "MNO", id: nil}
-%Learn.DataSource{description: "my new one", externalId: "MNO", id: nil}
+%Learn.Datasource{description: "my new one", externalId: "MNO", id: nil}
 iex(8)> {status, response} = Api.Datasources.post_datasource(rcauth, newds)
 
 {:ok,

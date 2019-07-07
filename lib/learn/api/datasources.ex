@@ -8,8 +8,8 @@ defmodule Learn.Api.Datasources do
   {:ok,
   %HTTPoison.Response{
     body: "{\"id\":\"_1_1\",\"externalId\":\"INTERNAL\",\"description\":\"Internal data source used for associating records that are created for use by the Bb system.\"}",
-  iex(7)> datasource = Learn.DataSource.new_from_json(response.body)
-    %Learn.DataSource{
+  iex(7)> datasource = Learn.Datasource.new_from_json(response.body)
+    %Learn.Datasource{
       description: "Internal data source used for associating records that are created for use by the Bb system.",
       externalId: "INTERNAL",
       id: "_1_1"
@@ -39,6 +39,14 @@ defmodule Learn.Api.Datasources do
     headers = [{"Content-Type",  "application/json"}, {"Authorization", "Bearer #{rest_client.token["access_token"]}"}]
     options = []
     {status, response} = HTTPoison.get url, headers, options
+    {status, response}
+  end
+
+  @doc """
+    Call the v1_dateSources endpoint to update the datasource.
+  """
+  def patch_datasource(rest_client, data_source_id, datasource, params \\ %{}, options \\ []) do
+    {status, response} = Learn.RestClient.patch_endpoint(rest_client, "#{@v1_dataSources}", data_source_id, datasource, params, options)
     {status, response}
   end
 

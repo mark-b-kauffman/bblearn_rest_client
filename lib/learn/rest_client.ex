@@ -218,10 +218,10 @@ defmodule Learn.RestClient do
         map_of_bodyvals example: x = %{"courseId" => "mbK_514_1"}
         Cam pass in options=[hackney: [:insecure]]
   """
-  def patch_endpoint(rest_client, url_path, map_of_bodyvals, params \\ %{}, options \\ [] ) do
+  def patch_endpoint(rest_client, url_path, id, map_of_bodyvals, params \\ %{}, options \\ [] ) do
     params = %{offset: 0} |> Map.merge(params)
     paramlist = URI.encode_query(params) # Turn the map into a parameter list string in one fell swoop.
-    url = "https://#{rest_client.fqdn}#{url_path}?#{paramlist}"
+    url = "https://#{rest_client.fqdn}#{url_path}/#{id}?#{paramlist}"
     body = Poison.encode!(map_of_bodyvals)
     headers = [{"Content-Type",  "application/json"}, {"Authorization", "Bearer #{rest_client.token["access_token"]}"}]
 
