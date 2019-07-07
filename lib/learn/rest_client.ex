@@ -199,6 +199,22 @@ defmodule Learn.RestClient do
     authorize(rest_client, 0, "", hackney_options)
   end
 
+    @doc """
+    Method to take in any /learn enpoint and DELETE
+    2019.06.26 now can pass in options=[hackney: [:insecure]]
+  """
+  def delete_endpoint(rest_client, url_path, id, params \\ %{}, options \\ [] ) do
+    params = %{offset: 0} |> Map.merge(params)
+    paramlist = URI.encode_query(params) # Turn the map into a parameter list string in one fell swoop.
+    url = "https://#{rest_client.fqdn}#{url_path}/#{id}?#{paramlist}"
+
+    headers = [{"Content-Type",  "application/json"}, {"Authorization", "Bearer #{rest_client.token["access_token"]}"}]
+
+    {status, response} = HTTPoison.delete url, headers, options
+
+    {status, response}
+  end
+
   @doc """
     Method to take in any /learn enpoint and GET the response.
     2019.06.26 now can pass in options=[hackney: [:insecure]]

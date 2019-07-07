@@ -22,6 +22,11 @@ defmodule Learn.Api.Datasources do
    ## DATASOURCES
 
   ## Functions that call the @v1_dataSources endpoints
+  def delete_datasource(rest_client, data_source_id, params \\ %{}, options \\ []) do
+    {status, response} = Learn.RestClient.delete_endpoint(rest_client, "#{@v1_dataSources}", data_source_id, params, options)
+    {status, response}
+  end
+
   def get_datasource(rest_client, datasourceId, params \\ %{}) do
     params = %{offset: 0} |> Map.merge(params)
     paramlist = URI.encode_query(params) # Turn the map into a parameter list string in one fell swoop.
