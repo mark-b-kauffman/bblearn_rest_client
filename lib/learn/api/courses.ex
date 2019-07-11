@@ -113,6 +113,18 @@ defmodule Learn.Api.Courses do
     {code, response}
   end
 
+  @doc """
+    Call the latest v_ courses endpoint to get courses, include a map of the parameters that is turned
+    into a parameter list and attached to the URL we make the request to.
+    2019.07.11 mbk switch to using the RestClient get endpoint.
+    Can now pass in options=[hackney: [:insecure]]
+  """
+  def get_courses(rest_client, params \\ %{}, options \\ []) do
+    course_id = ""
+    {status, response} = Learn.RestClient.get_endpoint(rest_client, "#{@v2_courses}", course_id, params, options)
+    {status, response}
+  end
+
   def post_course(rest_client,course, params \\ %{}) do
     {code, response} = post_v2_course(rest_client, course, params)
     {code, response}
@@ -142,17 +154,6 @@ defmodule Learn.Api.Courses do
     {code, response} = RestClient.post_endpoint(rest_client, url_path, the_announcement, params )
     {code, response}
   end
-
-
-  @doc """
-    Call the latest v_ courses endpoint, include a map of the parameters that is turned
-    into a parameter list and attached to the URL we make the request to.
-  """
-  def get_courses(rest_client, params \\ %{}) do
-    {code, response} = get_v2_courses(rest_client, params )
-    {code, response}
-  end
-
 
   @doc """
     post_v1_courses_copy(rest_client, course_id, reqCourseObjToConvert, params \\ %{} )

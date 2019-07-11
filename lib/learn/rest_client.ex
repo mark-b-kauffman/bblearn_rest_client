@@ -218,8 +218,9 @@ defmodule Learn.RestClient do
   @doc """
     Method to take in any /learn enpoint and GET the response.
     2019.06.26 now can pass in options=[hackney: [:insecure]]
+    2019.07.11 Must pass in an ID. If you don't want a particular object, pass in ""
   """
-  def get_endpoint(rest_client, url_path, id \\ "", params \\ %{}, options \\ [] ) do
+  def get_endpoint(rest_client, url_path, id, params \\ %{}, options \\ [] ) do
     params = %{offset: 0} |> Map.merge(params)
     paramlist = URI.encode_query(params) # Turn the map into a parameter list string in one fell swoop.
     url_id = case id do
