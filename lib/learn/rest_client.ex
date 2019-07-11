@@ -219,10 +219,14 @@ defmodule Learn.RestClient do
     Method to take in any /learn enpoint and GET the response.
     2019.06.26 now can pass in options=[hackney: [:insecure]]
   """
-  def get_endpoint(rest_client, url_path, params \\ %{}, options \\ [] ) do
+  def get_endpoint(rest_client, url_path, id \\ "", params \\ %{}, options \\ [] ) do
     params = %{offset: 0} |> Map.merge(params)
     paramlist = URI.encode_query(params) # Turn the map into a parameter list string in one fell swoop.
-    url = "https://#{rest_client.fqdn}#{url_path}?#{paramlist}"
+    url_id = case id do
+      "" -> ""
+      _ -> "/#{id}"
+    end
+    url = "https://#{rest_client.fqdn}#{url_path}#{url_id}?#{paramlist}"
     headers = [{"Content-Type",  "application/json"}, {"Authorization", "Bearer #{rest_client.token["access_token"]}"}]
 
     {status, response} = HTTPoison.get url, headers, options

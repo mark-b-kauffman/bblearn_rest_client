@@ -22,18 +22,32 @@ defmodule Learn.Term do
     }
   }
 
-  iex> {code, response} = RestClient.get(rcauth, "/learn/api/public/v1/terms/_2_1")
-  iex> term = Learn.Term.new_from_json(response.body)
+  iex(7)> {status, response} = Api.Terms.get_term(rcauth, "_2_1")
+  {:ok,
+  %HTTPoison.Response{
+    body: "{\"id\":\"_2_1\",\"externalId\":\"9f6c61bf1e2d4ed3baf60afc7ea19708\",\"dataSourceId\":\"_2_1\",\"name\":\"July 2019 Term\",\"description\":\"<p>The July 2019&nbsp;Term.&nbsp; Runs to Jan 1&nbsp;2020.</p>\",\"availability\":{\"available\":\"Yes\",\"duration\":{\"type\":\"DateRange\",\"start\":\"2019-07-11T00:00:00.000Z\",\"end\":\"2020-01-01T23:59:59.000Z\"}}}",
 
-  iex(2)> my_term = %Learn.Term{ }
-
-  iex(11)> json = Poison.encode!(my_term)
-
+    iex(11)> myterm = Learn.Term.new_from_json(response.body)
+    %Learn.Term{
+      availability: %{
+        "available" => "Yes",
+        "duration" => %{
+          "end" => "2020-01-01T23:59:59.000Z",
+          "start" => "2019-07-11T00:00:00.000Z",
+          "type" => "DateRange"
+        }
+      },
+      dataSourceId: "_2_1",
+      description: "<p>The July 2019&nbsp;Term.&nbsp; Runs to Jan 1&nbsp;2020.</p>",
+      externalId: "9f6c61bf1e2d4ed3baf60afc7ea19708",
+      id: "_2_1",
+      name: "July 2019 Term"
+    }
 
   """
   def new_from_json(json) do # returns a Term
     my_map = Poison.decode!(json)
-    term = Learn.RestUtil.to_struct(Learn.Datasource, my_map)
+    term = Learn.RestUtil.to_struct(Learn.Term, my_map)
     term
   end
 

@@ -18,28 +18,24 @@ defmodule Learn.Api.Terms do
     {status, response}
   end
 
-  def get_term(rest_client, termId, params \\ %{}) do
-    params = %{offset: 0} |> Map.merge(params)
-    paramlist = URI.encode_query(params) # Turn the map into a parameter list string in one fell swoop.
-    url = "https://#{rest_client.fqdn}#{@v1_terms}/#{termId}?#{paramlist}"
-    headers = [{"Content-Type",  "application/json"}, {"Authorization", "Bearer #{rest_client.token["access_token"]}"}]
-    options = []
-    {status, response} = HTTPoison.get url, headers, options
+  @doc """
+    These next two functions are similar. Having two is a nicety for the English language
+    Call the v1_terms endpoint to get a term, or terms.
+  """
+  def get_term(rest_client, term_id, params \\ %{}, options \\ []) do
+
+    {status, response} = Learn.RestClient.get_endpoint(rest_client, "#{@v1_terms}", term_id, params, options)
     {status, response}
   end
 
-  def get_terms(rest_client, params \\ %{}) do
-    params = %{offset: 0} |> Map.merge(params)
-    paramlist = URI.encode_query(params) # Turn the map into a parameter list string in one fell swoop.
-    url = "https://#{rest_client.fqdn}#{@v1_terms}?#{paramlist}"
-    headers = [{"Content-Type",  "application/json"}, {"Authorization", "Bearer #{rest_client.token["access_token"]}"}]
-    options = []
-    {status, response} = HTTPoison.get url, headers, options
+  def get_terms(rest_client, params \\ %{}, options \\ []) do
+    term_id = ""
+    {status, response} = Learn.RestClient.get_endpoint(rest_client, "#{@v1_terms}", term_id, params, options)
     {status, response}
   end
 
   @doc """
-    Call the v1_dateSources endpoint to update the term.
+    Call the v1_terms endpoint to update the term.
   """
   def patch_term(rest_client, data_source_id, term, params \\ %{}, options \\ []) do
     {status, response} = Learn.RestClient.patch_endpoint(rest_client, "#{@v1_terms}", data_source_id, term, params, options)
