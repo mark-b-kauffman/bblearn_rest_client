@@ -13,8 +13,8 @@ defmodule Learn.Api.Terms do
    ## Terms
 
   ## Functions that call the @v1_terms endpoints
-  def delete_term(rest_client, data_source_id, params \\ %{}, options \\ []) do
-    {status, response} = Learn.RestClient.delete_endpoint(rest_client, "#{@v1_terms}", data_source_id, params, options)
+  def delete_term(rest_client, term_id, params \\ %{}, options \\ []) do
+    {status, response} = Learn.RestClient.delete_endpoint(rest_client, "#{@v1_terms}", term_id, params, options)
     {status, response}
   end
 
@@ -37,8 +37,8 @@ defmodule Learn.Api.Terms do
   @doc """
     Call the v1_terms endpoint to update the term.
   """
-  def patch_term(rest_client, data_source_id, term, params \\ %{}, options \\ []) do
-    {status, response} = Learn.RestClient.patch_endpoint(rest_client, "#{@v1_terms}", data_source_id, term, params, options)
+  def patch_term(rest_client, term_id, term, params \\ %{}, options \\ []) do
+    {status, response} = Learn.RestClient.patch_endpoint(rest_client, "#{@v1_terms}", term_id, term, params, options)
     {status, response}
   end
 
